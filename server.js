@@ -117,6 +117,16 @@ app.get('/status', authenticate, async (req, res) => {
   }
 });
 
+// ─── Utilities ─────────────────────────────────────────────────────
+function getCleanEnv() {
+  const env = { ...process.env };
+  // Remove dashboard-specific variables so child apps can use their own defaults
+  delete env.PORT;
+  delete env.DASHBOARD_PASSWORD;
+  delete env.JWT_SECRET;
+  return env;
+}
+
 function formatBytes(bytes) {
   const gb = bytes / 1024 / 1024 / 1024;
   return gb >= 1 ? `${gb.toFixed(1)}GB` : `${(bytes / 1024 / 1024).toFixed(0)}MB`;
@@ -168,7 +178,7 @@ app.post('/action', authenticate, (req, res) => {
 
   const cmd = COMMANDS[action];
 
-  exec(cmd, { cwd: execCwd, timeout: 60000, maxBuffer: 1024 * 1024 * 2 }, (err, stdout, stderr) => {
+  exec(cmd, { cwd: execCwd, env: getCleanEnv(), timeout: 60000, maxBuffer: 1024 * 1024 * 2 }, (err, stdout, stderr) => {
     const output = [stdout, stderr].filter(Boolean).join('\n');
     res.json({
       action,
@@ -246,7 +256,7 @@ wss.on('connection', (ws, req) => {
     cols: parseInt(url.searchParams.get('cols') || '80', 10),
     rows: parseInt(url.searchParams.get('rows') || '24', 10),
     cwd: cwd,
-    env: process.env
+    env: getCleanEnv()
   });
 
   ptyProcess.onData((data) => {
