@@ -87,5 +87,5 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ---
 <p align="center">
   <b>VPS-CTRL</b><br>
-  Built with 💚 by <a href="https://github.com/chriz3656">chriz3656</a>
+  Built with 💚 by <a href="https://github.com/chriz-3656">chriz-3656</a>
 </p>
