@@ -34,6 +34,7 @@ const loginOverlay  = document.getElementById('login-overlay');
 const loginPassword = document.getElementById('login-password');
 const loginError    = document.getElementById('login-error');
 const logoutBtn     = document.getElementById('logout-btn');
+const killPortInput = document.getElementById('kill-port-input');
 
 // ─── Authentication ────────────────────────
 async function login() {
@@ -577,6 +578,30 @@ function setButtonsDisabled(disabled) {
   document.querySelectorAll('.action-btn').forEach(btn => {
     btn.disabled = disabled || !selectedPath;
   });
+}
+
+async function killPort() {
+  if (!connected) return;
+  const port = killPortInput.value.trim();
+  if (!port) {
+    print('ERROR: Please enter a port number.', 'err');
+    return;
+  }
+
+  print(`⚠ Attempting to kill processes on port ${port}...`, 'warn');
+  
+  try {
+    const data = await apiFetch('/action', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'kill_port', port, path: currentPath.textContent })
+    });
+
+    print(`✓ Port ${port} cleanup command executed.`, 'ok');
+    if (data.output) printRaw(data.output, 'dim');
+  } catch (err) {
+    print(`✗ Kill port failed: ${err.message}`, 'err');
+  }
 }
 
 // ─── Utilities ─────────────────────────────

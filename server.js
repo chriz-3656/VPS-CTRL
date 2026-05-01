@@ -144,7 +144,7 @@ function formatUptime(seconds) {
 }
 
 // ─── Action System ─────────────────────────────────────────────────
-const ALLOWED_ACTIONS = ['deploy', 'install', 'pm2_start', 'pm2_restart', 'pm2_stop', 'logs', 'npm_start', 'npm_dev'];
+const ALLOWED_ACTIONS = ['deploy', 'install', 'pm2_start', 'pm2_restart', 'pm2_stop', 'logs', 'npm_start', 'npm_dev', 'kill_port'];
 
 const COMMANDS = {
   deploy:      'git pull',
@@ -154,11 +154,12 @@ const COMMANDS = {
   pm2_stop:    'pm2 stop all',
   logs:        'pm2 logs --lines 50 --nostream',
   npm_start:   'npm start',
-  npm_dev:     'npm run dev'
+  npm_dev:     'npm run dev',
+  kill_port:   'fuser -k' // Will append port/tcp dynamically in handler
 };
 
 app.post('/action', authenticate, (req, res) => {
-  const { action, path: targetPath } = req.body;
+  const { action, path: targetPath, port } = req.body;
 
   if (!ALLOWED_ACTIONS.includes(action)) {
     return res.status(400).json({ error: `Unknown action: ${action}` });
@@ -176,7 +177,11 @@ app.post('/action', authenticate, (req, res) => {
   const stats = fs.statSync(safePath);
   const execCwd = stats.isDirectory() ? safePath : path.dirname(safePath);
 
-  const cmd = COMMANDS[action];
+  let cmd = COMMANDS[action];
+  if (action === 'kill_port') {
+    if (!port) return res.status(400).json({ error: 'Port required for kill_port' });
+    cmd = `${cmd} ${port}/tcp`;
+  }
 
   exec(cmd, { cwd: execCwd, env: getCleanEnv(), timeout: 60000, maxBuffer: 1024 * 1024 * 2 }, (err, stdout, stderr) => {
     const output = [stdout, stderr].filter(Boolean).join('\n');

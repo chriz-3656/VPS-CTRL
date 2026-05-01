@@ -445,6 +445,27 @@ body {
 
 .btn-icon { font-size: 14px; }
 
+.port-mgmt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mini-input {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 4px 8px;
+  width: 70px;
+  outline: none;
+}
+
+.mini-input:focus {
+  border-color: var(--green);
+}
+
 /* ─── TERMINAL PANEL ─────────────────────── */
 .panel-terminal {
   flex: 1;

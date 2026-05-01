@@ -111,6 +111,12 @@
             <button class="action-btn action-btn--info" data-action="npm_dev" onclick="runAction('npm_dev')" disabled>
               <span class="btn-icon">&#9883;</span> NPM DEV
             </button>
+
+            <div class="btn-group-label">PORT MGMT:</div>
+            <div class="port-mgmt">
+              <input type="number" id="kill-port-input" placeholder="8000" class="mini-input" />
+              <button class="action-btn action-btn--danger" onclick="killPort()">KILL PORT</button>
+            </div>
           </div>
         </div>
 
