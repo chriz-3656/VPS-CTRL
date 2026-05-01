@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VPS-CTRL | High-Performance VPS Dashboard</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap">
+    <style>
+        :root {
+            --green: #00ff88;
+            --green-dim: #00994d;
+            --bg: #030d07;
+            --bg-panel: #060f09;
+            --text: #00ff88;
+            --text-dim: #336644;
+            --border: #0f3a1e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Share Tech Mono', monospace;
+            line-height: 1.6;
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 136, 0.015) 2px, rgba(0, 255, 136, 0.015) 4px);
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+
+        header { text-align: center; padding: 60px 0; border-bottom: 1px solid var(--border); }
+        .logo { width: 180px; filter: drop-shadow(0 0 10px var(--green)); }
+        h1 { font-family: 'VT323', monospace; font-size: 64px; letter-spacing: 5px; margin: 20px 0; }
+        .tagline { color: var(--text-dim); font-size: 18px; letter-spacing: 2px; }
+
+        .hero-actions { margin-top: 40px; display: flex; justify-content: center; gap: 20px; }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            border: 1px solid var(--green);
+            color: var(--green);
+            text-decoration: none;
+            font-size: 14px;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            background: transparent;
+        }
+        .btn:hover { background: var(--green); color: var(--bg); box-shadow: 0 0 20px rgba(0, 255, 136, 0.4); }
+        .btn-primary { background: rgba(0, 255, 136, 0.1); }
+
+        section { padding: 60px 0; border-bottom: 1px solid var(--border); }
+        h2 { font-family: 'VT323', monospace; font-size: 36px; color: var(--green-dim); margin-bottom: 30px; letter-spacing: 3px; border-left: 4px solid var(--green); padding-left: 15px; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        .card { background: var(--bg-panel); border: 1px solid var(--border); padding: 25px; transition: transform 0.3s; }
+        .card:hover { transform: translateY(-5px); border-color: var(--green); }
+        .card h3 { margin-bottom: 15px; color: var(--green); }
+        .card p { font-size: 14px; color: var(--text-dim); }
+
+        code { background: #000; color: #ffaa00; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
+        pre { background: #000; padding: 20px; border: 1px solid var(--border); overflow-x: auto; margin: 20px 0; }
+        pre code { color: var(--green); background: transparent; padding: 0; }
+
+        .feature-list { list-style: none; }
+        .feature-list li { margin-bottom: 15px; padding-left: 25px; position: relative; }
+        .feature-list li::before { content: '>'; position: absolute; left: 0; color: var(--green); }
+
+        footer { text-align: center; padding: 60px 0; color: var(--text-dim); font-size: 14px; }
+        footer a { color: var(--green); text-decoration: none; }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 40px; }
+            .hero-actions { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="logo.png" alt="VPS-CTRL" class="logo">
+            <h1>VPS-CTRL</h1>
+            <p class="tagline">ULTIMATE VPS MANAGEMENT COMMAND CENTER</p>
+            <div class="hero-actions">
+                <a href="https://github.com/chriz-3656/VPS-CTRL" class="btn btn-primary">VIEW ON GITHUB</a>
+                <a href="#setup" class="btn">QUICK START</a>
+            </div>
+        </header>
+
+        <section id="overview">
+            <h2>01. OVERVIEW</h2>
+            <p>VPS-CTRL is a lightweight, high-performance dashboard designed for developers who need full control over their remote servers without the overhead of heavy enterprise tools. It combines real-time monitoring, a robust file explorer, and a full interactive terminal into a single, secure web interface.</p>
+        </section>
+
+        <section id="features">
+            <h2>02. CAPABILITIES</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>📊 Live Metrics</h3>
+                    <p>High-resolution CPU and RAM monitoring with interactive mini-graphs for instant health checks.</p>
+                </div>
+                <div class="card">
+                    <h3>🖥️ PTY Terminal</h3>
+                    <p>Real pseudo-terminal integration via WebSockets. Run interactive apps like htop, nano, and vim natively.</p>
+                </div>
+                <div class="card">
+                    <h3>📝 Code Editor</h3>
+                    <p>Built-in Monaco Editor (VS Code core) with syntax highlighting, auto-detection, and remote saving.</p>
+                </div>
+                <div class="card">
+                    <h3>📁 File Control</h3>
+                    <p>Advanced explorer with hidden file support. The terminal automatically syncs its path to your navigation.</p>
+                </div>
+                <div class="card">
+                    <h3>⚙️ PM2 & NPM</h3>
+                    <p>Deploy and manage processes with dedicated PM2 controls and direct NPM execution buttons.</p>
+                </div>
+                <div class="card">
+                    <h3>🔒 Security</h3>
+                    <p>JWT authentication, HttpOnly secure cookies, and strict directory traversal prevention.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="setup">
+            <h2>03. DEPLOYMENT</h2>
+            <p>Follow these steps to initialize your control center:</p>
+            <pre><code># 1. Clone the core
+git clone https://github.com/chriz-3656/VPS-CTRL.git
+
+# 2. Install dependencies
+cd VPS-CTRL
+npm install
+
+# 3. Configure environment
+# Create .env from template
+cp .env.example .env
+# Edit your password and secret
+nano .env
+
+# 4. Launch system
+npm start</code></pre>
+        </section>
+
+        <section id="auth">
+            <h2>04. AUTHENTICATION</h2>
+            <p>VPS-CTRL uses an industrial-grade security stack to ensure your terminal remains private. All sessions are protected by encrypted JSON Web Tokens (JWT) stored in secure, read-only cookies.</p>
+            <ul class="feature-list">
+                <li>Automatic session timeout for safety.</li>
+                <li>Encryption of all WebSocket terminal traffic.</li>
+                <li>Path restriction to the system home directory.</li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>SYSTEM STATUS: ACTIVE // VERSION: 1.0.0</p>
+            <p>Designed and Built by <a href="https://github.com/chriz3656">chriz3656</a></p>
+            <p>Distributed under the MIT License</p>
+        </footer>
+    </div>
+</body>
+</html>

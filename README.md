@@ -1,9 +1,15 @@
-# VPS-CTRL 🚀
+<p align="center">
+  <img src="logo.png" alt="VPS-CTRL Logo" width="200">
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/version-1.0.0-00ff88?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License">
+</p>
+
+---
 
 A lightweight, high-performance, and retro-styled VPS Management Dashboard. Monitor system health, explore files, edit code, and manage processes through a unified, secure web interface.
-
-![Version](https://img.shields.io/badge/version-1.0.0-00ff88?style=flat-square)
-![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)
 
 ## ✨ Features
 
@@ -26,9 +32,8 @@ A lightweight, high-performance, and retro-styled VPS Management Dashboard. Moni
 
 ## 🛠️ Tech Stack
 
-- **Backend:** Node.js, Express, WebSockets (`ws`), `node-pty`.
-- **Frontend:** Vanilla JS, CSS3, HTML5.
-- **Libraries:** xterm.js, Monaco Editor, systeminformation.
+- **Backend:** Node.js, Express, WebSockets (`ws`), `node-pty`, `jsonwebtoken` (JWT), `bcryptjs`, `systeminformation`.
+- **Frontend:** Vanilla JS, CSS3, HTML5, xterm.js, Monaco Editor.
 
 ## 🚀 Quick Start
 
@@ -80,4 +85,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
-Built with 💚 by [chriz3656](https://github.com/chriz3656)
+<p align="center">
+  <b>VPS-CTRL</b><br>
+  Built with 💚 by <a href="https://github.com/chriz3656">chriz3656</a>
+</p>
