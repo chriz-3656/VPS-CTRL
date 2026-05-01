@@ -311,33 +311,6 @@ function clearLogs() {
   logViewer.innerHTML = '<span class="dim">[ logs cleared ]</span>';
 }
 
-// ─── Connect ───────────────────────────────
-function connect() {
-  const input = document.getElementById('api-key');
-  apiKey = input.value.trim();
-  if (!apiKey) {
-    print('ERROR: API key cannot be empty.', 'err');
-    return;
-  }
-
-  print('Connecting to VPS dashboard...', 'inf');
-
-  // Test connection with /status
-  apiFetch('/status')
-    .then(data => {
-      connected = true;
-      print(`Connected. CPU: ${data.cpu}% | RAM: ${data.ram}% | Uptime: ${data.uptime}`, 'ok');
-      print('Loading file system...', 'inf');
-      loadFiles(data.root);
-      startStatusPolling();
-      connectPty(data.root);
-    })
-    .catch(err => {
-      print(`Connection failed: ${err.message}`, 'err');
-      connected = false;
-    });
-}
-
 function connectPty(cwd) {
   if (ptySocket) ptySocket.close();
   
@@ -362,9 +335,16 @@ function connectPty(cwd) {
 
 // ─── API Helper ────────────────────────────
 async function apiFetch(endpoint, options = {}) {
-  const sep = endpoint.includes('?') ? '&' : '?';
-  const url = `${endpoint}${sep}key=${encodeURIComponent(apiKey)}`;
-  const res = await fetch(url, options);
+  const res = await fetch(endpoint, options);
+  
+  if (res.status === 401) {
+    connected = false;
+    loginOverlay.style.display = 'flex';
+    logoutBtn.style.display = 'none';
+    if (statusInterval) clearInterval(statusInterval);
+    throw new Error('Unauthorized');
+  }
+
   if (!res.ok) {
     const body = await res.json().catch(() => ({ error: res.statusText }));
     throw new Error(body.error || `HTTP ${res.status}`);
