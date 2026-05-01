@@ -4,38 +4,72 @@ const path = require('path');
 const os = require('os');
 const { exec } = require('child_process');
 const si = require('systeminformation');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const PORT = 5050;
-const API_KEY = process.env.DASHBOARD_KEY || 'SECRET';
+const DASHBOARD_PASSWORD = process.env.DASHBOARD_PASSWORD || 'admin';
+const JWT_SECRET = process.env.JWT_SECRET || 'vps-ctrl-secret-99';
 const ALLOWED_ROOT = os.homedir();
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ─── Auth Middleware ───────────────────────────────────────────────
-function requireKey(req, res, next) {
-  const key = req.query.key || req.headers['x-api-key'];
-  if (key !== API_KEY) {
-    return res.status(401).json({ error: 'Unauthorized: invalid API key' });
+function authenticate(req, res, next) {
+  const token = req.cookies.token || req.headers['authorization']?.split(' ')[1];
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized: No token provided' });
   }
-  next();
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    res.status(401).json({ error: 'Unauthorized: Invalid token' });
+  }
 }
+
+// ─── Login Endpoint ────────────────────────────────────────────────
+app.post('/login', async (req, res) => {
+  const { password } = req.body;
+  if (!password) return res.status(400).json({ error: 'Password required' });
+
+  // For simplicity, we compare with the env var directly
+  // In a real multi-user app, we'd use bcrypt.compare with a stored hash
+  if (password === DASHBOARD_PASSWORD) {
+    const token = jwt.sign({ authorized: true }, JWT_SECRET, { expiresIn: '24h' });
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 86400000 // 24 hours
+    });
+    return res.json({ success: true });
+  }
+
+  res.status(401).json({ error: 'Invalid password' });
+});
+
+app.post('/logout', (req, res) => {
+  res.clearCookie('token');
+  res.json({ success: true });
+});
 
 // ─── Path Validation ───────────────────────────────────────────────
 function validatePath(inputPath) {
   if (typeof inputPath !== 'string') return null;
-  // Resolve to absolute, stripping traversal attempts
   const resolved = path.resolve(inputPath);
-  // Must stay within ALLOWED_ROOT
   if (!resolved.startsWith(ALLOWED_ROOT)) return null;
-  // No null bytes
   if (resolved.includes('\0')) return null;
   return resolved;
 }
 
 // ─── File System Explorer ──────────────────────────────────────────
-app.get('/files', requireKey, (req, res) => {
+app.get('/files', authenticate, (req, res) => {
   const safePath = validatePath(req.query.path || ALLOWED_ROOT);
   if (!safePath) {
     return res.status(400).json({ error: 'Invalid path' });
@@ -61,7 +95,7 @@ app.get('/files', requireKey, (req, res) => {
 });
 
 // ─── System Status ─────────────────────────────────────────────────
-app.get('/status', requireKey, async (req, res) => {
+app.get('/status', authenticate, async (req, res) => {
   try {
     const [cpu, mem, time] = await Promise.all([
       si.currentLoad(),
@@ -112,21 +146,18 @@ const COMMANDS = {
   npm_dev:     'npm run dev'
 };
 
-app.post('/action', requireKey, (req, res) => {
+app.post('/action', authenticate, (req, res) => {
   const { action, path: targetPath } = req.body;
 
-  // Validate action
   if (!ALLOWED_ACTIONS.includes(action)) {
     return res.status(400).json({ error: `Unknown action: ${action}` });
   }
 
-  // Validate path
   const safePath = validatePath(targetPath);
   if (!safePath) {
     return res.status(400).json({ error: 'Invalid path' });
   }
 
-  // Check path exists and ensure it is a directory for exec
   if (!fs.existsSync(safePath)) {
     return res.status(400).json({ error: 'Path does not exist' });
   }
@@ -136,7 +167,6 @@ app.post('/action', requireKey, (req, res) => {
 
   const cmd = COMMANDS[action];
 
-  // Execute in the safe directory, never injecting user input into cmd
   exec(cmd, { cwd: execCwd, timeout: 60000, maxBuffer: 1024 * 1024 * 2 }, (err, stdout, stderr) => {
     const output = [stdout, stderr].filter(Boolean).join('\n');
     res.json({
@@ -149,7 +179,7 @@ app.post('/action', requireKey, (req, res) => {
 });
 
 // ─── File Editor ──────────────────────────────────────────────────
-app.get('/file-content', requireKey, (req, res) => {
+app.get('/file-content', authenticate, (req, res) => {
   const safePath = validatePath(req.query.path);
   if (!safePath) return res.status(400).json({ error: 'Invalid path' });
 
@@ -159,7 +189,7 @@ app.get('/file-content', requireKey, (req, res) => {
   });
 });
 
-app.post('/file-save', requireKey, (req, res) => {
+app.post('/file-save', authenticate, (req, res) => {
   const { path: targetPath, content } = req.body;
   const safePath = validatePath(targetPath);
   if (!safePath) return res.status(400).json({ error: 'Invalid path' });
@@ -184,17 +214,26 @@ const wss = new WebSocket.Server({ server, path: '/pty' });
 
 wss.on('connection', (ws, req) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
-  const key = url.searchParams.get('key');
   
-  if (key !== API_KEY) {
-    ws.close(4001, 'Unauthorized');
+  // Extract token from cookies manually because WebSocket doesn't support cookies natively in all environments
+  const cookies = req.headers.cookie ? Object.fromEntries(req.headers.cookie.split('; ').map(c => c.split('='))) : {};
+  const token = cookies.token || url.searchParams.get('token');
+
+  if (!token) {
+    ws.close(4001, 'Unauthorized: No token provided');
+    return;
+  }
+
+  try {
+    jwt.verify(token, JWT_SECRET);
+  } catch (err) {
+    ws.close(4001, 'Unauthorized: Invalid token');
     return;
   }
 
   const requestedPath = url.searchParams.get('path');
   let cwd = validatePath(requestedPath) || ALLOWED_ROOT;
   
-  // Ensure cwd is a directory
   if (fs.existsSync(cwd) && !fs.statSync(cwd).isDirectory()) {
     cwd = path.dirname(cwd);
   }
@@ -226,6 +265,6 @@ wss.on('connection', (ws, req) => {
 
 server.listen(PORT, () => {
   console.log(`VPS Dashboard running on http://localhost:${PORT}`);
-  console.log(`API Key: ${API_KEY}`);
+  console.log(`Password: ${DASHBOARD_PASSWORD === 'admin' ? 'admin (DEFAULT - PLEASE CHANGE!)' : '********'}`);
   console.log(`Allowed root: ${ALLOWED_ROOT}`);
 });

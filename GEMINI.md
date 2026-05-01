@@ -4,12 +4,12 @@ This project is a lightweight, web-based VPS Management Dashboard built with Nod
 
 ## Project Overview
 
-- **Main Technologies:** Node.js, Express, `ws` (WebSockets), `node-pty` (pseudo-terminal), `systeminformation` (for metrics).
-- **Frontend:** Vanilla HTML/CSS/JS (located in `public/`), `xterm.js` for full terminal emulation.
+- **Main Technologies:** Node.js, Express, `ws` (WebSockets), `node-pty`, `jsonwebtoken` (JWT), `bcryptjs`, `systeminformation`.
+- **Frontend:** Vanilla HTML/CSS/JS, `xterm.js`, `monaco-editor`.
 - **Architecture:**
-    - `server.js`: Main Express server handling API endpoints, static file serving, and the WebSocket server for the PTY.
+    - `server.js`: Main Express server handling authentication, API endpoints, and PTY WebSocket.
     - `public/`: Contains the frontend assets.
-    - **Security:** API Key authentication is required for all management endpoints and WebSocket connections. Path validation ensures file operations are restricted to the system's home directory (automatically detected).
+    - **Security:** Password-based login with JWT session tokens stored in `httpOnly` cookies. Path validation ensures file operations are restricted to the system's home directory.
 
 ## Features
 
@@ -43,11 +43,11 @@ npm install
 
 ### Running the Dashboard
 ```bash
-# Default (uses API Key: SECRET)
+# Default (Password: admin)
 npm start
 
-# With custom API Key
-DASHBOARD_KEY=your_secret_key npm start
+# With custom Password and JWT Secret
+DASHBOARD_PASSWORD=your_password JWT_SECRET=your_secret npm start
 ```
 The dashboard will be available at `http://localhost:5050`.
 
@@ -62,11 +62,11 @@ The dashboard will be available at `http://localhost:5050`.
 
 ## API Reference
 
-All management endpoints require an API Key via query parameter `?key=...` or `x-api-key` header.
-
-- `GET /status`: Returns system metrics.
-- `GET /files?path=...`: Lists directory contents.
-- `POST /action`: Executes a predefined command. Body: `{ "action": "...", "path": "..." }`.
-- `GET /file-content?path=...`: Retrieves the content of a file.
-- `POST /file-save`: Saves content to a file. Body: `{ "path": "...", "content": "..." }`.
-- `WebSocket /pty?key=...&path=...`: Establishes a bidirectional PTY session.
+- `POST /login`: Authenticates user and issues JWT cookie.
+- `POST /logout`: Clears the session cookie.
+- `GET /status`: Returns system metrics (Requires Auth).
+- `GET /files?path=...`: Lists directory contents (Requires Auth).
+- `POST /action`: Executes a predefined command (Requires Auth).
+- `GET /file-content?path=...`: Retrieves file content (Requires Auth).
+- `POST /file-save`: Saves file content (Requires Auth).
+- `WebSocket /pty?path=...`: PTY session (Requires Auth via Cookie).

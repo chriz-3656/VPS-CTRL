@@ -32,11 +32,20 @@
       <span class="status-item">UPTIME: <span id="uptime-val">--</span></span>
     </div>
     <div class="topbar-right">
-      <span class="key-label">KEY:</span>
-      <input type="password" id="api-key" placeholder="enter api key" autocomplete="off" />
-      <button id="connect-btn" onclick="connect()">CONNECT</button>
+      <button id="logout-btn" onclick="logout()" style="display: none;">LOGOUT</button>
     </div>
   </header>
+
+  <!-- LOGIN OVERLAY -->
+  <div id="login-overlay" class="overlay">
+    <div class="login-box">
+      <div class="logo">&#9632; VPS_CTRL</div>
+      <div class="login-title">RESTRICTED ACCESS</div>
+      <input type="password" id="login-password" placeholder="enter password" autocomplete="off" />
+      <button id="login-btn" onclick="login()">AUTHORIZE</button>
+      <div id="login-error" class="err"></div>
+    </div>
+  </div>
 
   <!-- MAIN LAYOUT -->
   <main class="layout">

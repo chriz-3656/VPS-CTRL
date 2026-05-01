@@ -111,48 +111,91 @@ body {
   background: rgba(0, 255, 136, 0.05);
 }
 
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.key-label {
-  color: var(--text-dim);
+#logout-btn {
+  background: transparent;
+  border: 1px solid var(--red);
+  color: var(--red);
+  font-family: var(--mono);
   font-size: 11px;
-}
-
-#api-key {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  color: var(--green);
-  font-family: var(--mono);
-  font-size: 12px;
-  padding: 4px 8px;
-  width: 140px;
-  outline: none;
-}
-
-#api-key:focus {
-  border-color: var(--green);
-  box-shadow: 0 0 6px var(--green-glow);
-}
-
-#connect-btn {
-  background: var(--green-dark);
-  border: 1px solid var(--green);
-  color: var(--green);
-  font-family: var(--mono);
-  font-size: 12px;
   padding: 4px 12px;
   cursor: pointer;
   letter-spacing: 1px;
 }
 
-#connect-btn:hover {
+#logout-btn:hover {
+  background: var(--red);
+  color: #fff;
+}
+
+/* ─── LOGIN OVERLAY ──────────────────────── */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(3, 13, 7, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.login-box {
+  width: 320px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 0 30px var(--green-glow);
+}
+
+.login-title {
+  color: var(--text-dim);
+  font-size: 11px;
+  letter-spacing: 3px;
+  margin: 15px 0 25px;
+}
+
+#login-password {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 14px;
+  padding: 10px;
+  width: 100%;
+  outline: none;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#login-password:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 10px var(--green-glow);
+}
+
+#login-btn {
+  background: var(--green-dark);
+  border: 1px solid var(--green);
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 10px 20px;
+  width: 100%;
+  cursor: pointer;
+  letter-spacing: 2px;
+}
+
+#login-btn:hover {
   background: var(--green);
   color: var(--bg);
+}
+
+#login-error {
+  margin-top: 15px;
+  font-size: 11px;
+  min-height: 1.2em;
 }
 
 /* ─── LAYOUT ─────────────────────────────── */

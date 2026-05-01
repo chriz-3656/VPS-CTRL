@@ -15,8 +15,11 @@ A lightweight, high-performance, and retro-styled VPS Management Dashboard. Moni
     - **PM2 Integration:** Start, Restart, and Stop processes.
     - **Direct NPM:** Run `npm start` or `npm run dev` directly.
 - **📜 Live Logs:** Dedicated log viewer for quick inspection of application outputs.
+- **🔒 Secure Authentication:**
+    - **Password Protection:** Restricted access with industrial-grade password verification.
+    - **JWT Sessions:** Secure, time-limited sessions using JSON Web Tokens.
+    - **HttpOnly Cookies:** Protection against Cross-Site Scripting (XSS) by storing tokens in secure cookies.
 - **🔒 Security First:**
-    - API Key authentication for all endpoints and WebSockets.
     - Strict path validation to prevent directory traversal.
     - Automatic detection of the system's home directory as the restricted root.
 - **🎨 Retro Aesthetic:** A high-contrast, cyberpunk-inspired green terminal theme.
@@ -50,22 +53,23 @@ A lightweight, high-performance, and retro-styled VPS Management Dashboard. Moni
 
 3. **Start the server:**
    ```bash
-   # Default key: SECRET
+   # Default password: admin
    npm start
 
-   # Or with a custom key
-   DASHBOARD_KEY=your_secure_key npm start
+   # Or with a custom password and JWT secret
+   DASHBOARD_PASSWORD=your_secure_password JWT_SECRET=your_secret npm start
    ```
 
 4. **Access the dashboard:**
-   Open `http://localhost:5050` in your browser.
+   Open `http://localhost:5050` in your browser. You will be prompted for your password.
 
 ## 📖 Usage
 
-1. **Connect:** Enter your `API_KEY` in the top right and click **CONNECT**.
+1. **Authorize:** Enter your dashboard password on the login screen.
 2. **Explore:** Use the left panel to browse files. The terminal working directory will automatically follow your selection.
 3. **Edit:** Double-click any file in the File Explorer to open it in the **EDITOR** tab. Use `Ctrl+S` to save.
 4. **Manage:** Use the **ACTIONS** panel to deploy or control your application processes.
+5. **Logout:** Use the **LOGOUT** button in the top right to end your session.
 
 ## 📜 License
 

@@ -2,7 +2,6 @@
    VPS_CTRL — Frontend Logic
    ───────────────────────────────────────── */
 
-let apiKey = '';
 let connected = false;
 let selectedPath = null;
 let statusInterval = null;
@@ -16,6 +15,9 @@ let term = null;
 let fitAddon = null;
 let ptySocket = null;
 
+let editor = null;
+let currentOpenFile = null;
+
 // ─── DOM Refs ──────────────────────────────
 const fileTree      = document.getElementById('file-tree');
 const currentPath   = document.getElementById('current-path');
@@ -23,14 +25,86 @@ const showHiddenToggle = document.getElementById('show-hidden-toggle');
 const selectedDisplay = document.getElementById('selected-display');
 const cpuVal        = document.getElementById('cpu-val');
 const ramVal        = document.getElementById('ram-val');
-const ramDetail     = document.getElementById('ram-detail');
 const uptimeVal     = document.getElementById('uptime-val');
 const logViewer     = document.getElementById('log-viewer');
 const editorFilename = document.getElementById('editor-filename');
 const saveBtn       = document.getElementById('save-btn');
 
-let editor = null;
-let currentOpenFile = null;
+const loginOverlay  = document.getElementById('login-overlay');
+const loginPassword = document.getElementById('login-password');
+const loginError    = document.getElementById('login-error');
+const logoutBtn     = document.getElementById('logout-btn');
+
+// ─── Authentication ────────────────────────
+async function login() {
+  const password = loginPassword.value;
+  if (!password) return;
+
+  loginError.textContent = 'Verifying...';
+
+  try {
+    const res = await fetch('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password })
+    });
+
+    if (res.ok) {
+      loginOverlay.style.display = 'none';
+      loginPassword.value = '';
+      loginError.textContent = '';
+      initDashboard();
+    } else {
+      const data = await res.json();
+      loginError.textContent = data.error || 'Access Denied';
+    }
+  } catch (err) {
+    loginError.textContent = 'Connection error';
+  }
+}
+
+async function logout() {
+  await fetch('/logout', { method: 'POST' });
+  location.reload();
+}
+
+async function initDashboard() {
+  if (connected) return;
+  
+  try {
+    const data = await apiFetch('/status');
+    connected = true;
+    logoutBtn.style.display = 'block';
+    
+    print(`Authorized. CPU: ${data.cpu}% | RAM: ${data.ram}% | Uptime: ${data.uptime}`, 'ok');
+    print('Loading systems...', 'inf');
+    
+    loadFiles(data.root);
+    startStatusPolling();
+    connectPty(data.root);
+  } catch (err) {
+    // 401 handled by apiFetch
+  }
+}
+
+// ─── API Helper ────────────────────────────
+async function apiFetch(endpoint, options = {}) {
+  const res = await fetch(endpoint, options);
+  
+  if (res.status === 401) {
+    connected = false;
+    loginOverlay.style.display = 'flex';
+    logoutBtn.style.display = 'none';
+    if (statusInterval) clearInterval(statusInterval);
+    throw new Error('Unauthorized');
+  }
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({ error: res.statusText }));
+    throw new Error(body.error || `HTTP ${res.status}`);
+  }
+  return res.json();
+}
 
 // ─── Terminal Output ───────────────────────
 const ANSI_COLORS = {
@@ -67,7 +141,7 @@ function initTerminal() {
     }
   });
 
-  print('VPS_CTRL dashboard ready.\nEnter your API key and click CONNECT to begin.', 'dim');
+  print('VPS_CTRL security active.', 'dim');
   printRaw('─────────────────────────────────────────────', 'dim');
 }
 
@@ -264,7 +338,7 @@ function connectPty(cwd) {
   if (ptySocket) ptySocket.close();
   
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  const url = `${protocol}//${window.location.host}/pty?key=${encodeURIComponent(apiKey)}&path=${encodeURIComponent(cwd)}&cols=${term.cols}&rows=${term.rows}`;
+  const url = `${protocol}//${window.location.host}/pty?path=${encodeURIComponent(cwd)}&cols=${term.cols}&rows=${term.rows}`;
   
   ptySocket = new WebSocket(url);
   
@@ -526,11 +600,12 @@ function escHtml(str) {
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-// ─── Enter key on API key input ────────────
-document.getElementById('api-key').addEventListener('keydown', e => {
-  if (e.key === 'Enter') connect();
+// ─── Enter key on Login input ────────────
+loginPassword.addEventListener('keydown', e => {
+  if (e.key === 'Enter') login();
 });
 
 // ─── Init ─────────────────────────
 initTerminal();
 initEditor();
+initDashboard(); // Auto-login check
