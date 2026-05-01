@@ -83,7 +83,11 @@ async function initDashboard() {
     startStatusPolling();
     connectPty(data.root);
   } catch (err) {
-    // 401 handled by apiFetch
+    if (err.message !== 'Unauthorized') {
+      console.error('Initialization error:', err);
+      if (term) print(`System Error: ${err.message}`, 'err');
+      else alert(`System Error: ${err.message}`);
+    }
   }
 }
 
