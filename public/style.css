@@ -20,8 +20,22 @@
   --text:        #00ff88;
   --text-dim:    #336644;
   --text-mid:    #00cc66;
+  --scanline:    rgba(0, 255, 136, 0.015);
   --mono:        'Share Tech Mono', 'Courier New', monospace;
   --display:     'VT323', monospace;
+}
+
+body.light-mode {
+  --bg:          #f0f2f5;
+  --bg-panel:    #ffffff;
+  --bg-panel2:   #e4e6eb;
+  --border:      #ccd0d5;
+  --border-lit:  #00ff88;
+  --text:        #1c1e21;
+  --text-dim:    #65676b;
+  --text-mid:    #050505;
+  --scanline:    rgba(0, 0, 0, 0.01);
+  --green-glow:  rgba(0, 255, 136, 0.05);
 }
 
 *, *::before, *::after {
@@ -37,7 +51,7 @@ html, body {
 
 body {
   background: var(--bg);
-  color: var(--green);
+  color: var(--text);
   font-family: var(--mono);
   font-size: 13px;
   display: flex;
@@ -48,8 +62,8 @@ body {
     0deg,
     transparent,
     transparent 2px,
-    rgba(0, 255, 136, 0.015) 2px,
-    rgba(0, 255, 136, 0.015) 4px
+    var(--scanline) 2px,
+    var(--scanline) 4px
   );
 }
 
