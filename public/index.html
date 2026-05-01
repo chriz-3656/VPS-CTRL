@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VPS CTRL // DASHBOARD</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css" />
+  <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="logo">&#9632; VPS_CTRL</span>
+      <span class="version">v1.0.0</span>
+    </div>
+    <div class="topbar-center">
+      <div class="status-item">
+        CPU: <span id="cpu-val">--</span>%
+        <canvas id="cpu-graph" class="mini-graph" width="60" height="20"></canvas>
+      </div>
+      <span class="divider">|</span>
+      <div class="status-item">
+        RAM: <span id="ram-val">--</span>%
+        <canvas id="ram-graph" class="mini-graph" width="60" height="20"></canvas>
+      </div>
+      <span class="divider">|</span>
+      <span class="status-item">UPTIME: <span id="uptime-val">--</span></span>
+    </div>
+    <div class="topbar-right">
+      <span class="key-label">KEY:</span>
+      <input type="password" id="api-key" placeholder="enter api key" autocomplete="off" />
+      <button id="connect-btn" onclick="connect()">CONNECT</button>
+    </div>
+  </header>
+
+  <!-- MAIN LAYOUT -->
+  <main class="layout">
+
+    <!-- LEFT: File Explorer -->
+    <aside class="panel panel-left">
+      <div class="panel-header">
+        <span class="panel-title">&#128193; FILE EXPLORER</span>
+        <label class="toggle-hidden">
+          <input type="checkbox" id="show-hidden-toggle" onchange="toggleHiddenFiles()" />
+          <span>HIDDEN</span>
+        </label>
+      </div>
+      <div class="path-bar">
+        <span id="current-path">~</span>
+      </div>
+      <div class="file-tree" id="file-tree">
+        <div class="placeholder">[ connect to browse ]</div>
+      </div>
+    </aside>
+
+    <!-- CENTER/RIGHT: Tabs + Content -->
+    <section class="panel-main">
+
+      <!-- Tabs Navigation -->
+      <nav class="tabs-nav">
+        <button class="tab-btn active" onclick="switchTab('terminal')">TERMINAL</button>
+        <button class="tab-btn" onclick="switchTab('logs')">LOGS</button>
+        <button class="tab-btn" onclick="switchTab('editor')">EDITOR</button>
+      </nav>
+
+      <!-- Tab Contents -->
+      <div id="tab-terminal" class="tab-content active">
+        <!-- Action Bar -->
+        <div class="panel panel-actions">
+          <div class="panel-header">
+            <span class="panel-title">&#9881; ACTIONS</span>
+            <span class="selected-path-label">TARGET: <span id="selected-display">none selected</span></span>
+          </div>
+          <div class="action-buttons">
+            <button class="action-btn" data-action="deploy"  onclick="runAction('deploy')" disabled title="git pull">
+              <span class="btn-icon">&#8659;</span> DEPLOY
+            </button>
+            <button class="action-btn" data-action="install" onclick="runAction('install')" disabled title="npm install">
+              <span class="btn-icon">&#128230;</span> INSTALL
+            </button>
+
+            <div class="btn-group-label">PM2 CTRL:</div>
+            <button class="action-btn" data-action="pm2_start" onclick="runAction('pm2_start')" disabled>
+              <span class="btn-icon">&#9654;</span> START
+            </button>
+            <button class="action-btn" data-action="pm2_restart" onclick="runAction('pm2_restart')" disabled>
+              <span class="btn-icon">&#8635;</span> RESTART
+            </button>
+            <button class="action-btn action-btn--danger" data-action="pm2_stop" onclick="runAction('pm2_stop')" disabled>
+              <span class="btn-icon">&#9632;</span> STOP
+            </button>
+
+            <div class="btn-group-label">DIRECT NPM:</div>
+            <button class="action-btn action-btn--info" data-action="npm_start" onclick="runAction('npm_start')" disabled>
+              <span class="btn-icon">&#9655;</span> NPM START
+            </button>
+            <button class="action-btn action-btn--info" data-action="npm_dev" onclick="runAction('npm_dev')" disabled>
+              <span class="btn-icon">&#9883;</span> NPM DEV
+            </button>
+          </div>
+        </div>
+
+        <!-- Terminal Output -->
+        <div class="panel panel-terminal">
+          <div class="panel-header">
+            <span class="panel-title">&#9681; TERMINAL</span>
+            <div class="terminal-controls">
+              <button class="ctrl-btn" onclick="clearTerminal()">CLEAR</button>
+            </div>
+          </div>
+          <div id="terminal-container"></div>
+        </div>
+      </div>
+
+      <div id="tab-logs" class="tab-content">
+        <div class="panel panel-logs">
+          <div class="panel-header">
+            <span class="panel-title">&#9776; LIVE LOGS</span>
+            <div class="log-controls">
+              <button class="ctrl-btn" onclick="refreshLogs()">REFRESH</button>
+              <button class="ctrl-btn" onclick="clearLogs()">CLEAR</button>
+            </div>
+          </div>
+          <pre class="log-viewer" id="log-viewer"><span class="dim">[ select a folder and click REFRESH to load logs ]</span></pre>
+        </div>
+      </div>
+
+      <div id="tab-editor" class="tab-content">
+        <div class="panel panel-editor">
+          <div class="panel-header">
+            <span class="panel-title">&#9998; CODE EDITOR</span>
+            <div class="editor-controls">
+              <span id="editor-filename" class="dim">no file open</span>
+              <button class="ctrl-btn" onclick="saveFile()" id="save-btn" disabled>SAVE (Ctrl+S)</button>
+            </div>
+          </div>
+          <div id="monaco-container"></div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

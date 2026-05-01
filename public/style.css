@@ -1,0 +1,513 @@
+/* ───────────────────────────────────────────
+   VPS_CTRL — Retro Terminal Dashboard
+   ─────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap');
+
+:root {
+  --green:       #00ff88;
+  --green-dim:   #00994d;
+  --green-dark:  #003322;
+  --green-glow:  rgba(0, 255, 136, 0.12);
+  --amber:       #ffaa00;
+  --red:         #ff4444;
+  --cyan:        #00ccff;
+  --bg:          #030d07;
+  --bg-panel:    #060f09;
+  --bg-panel2:   #0a1a0e;
+  --border:      #0f3a1e;
+  --border-lit:  #00ff88;
+  --text:        #00ff88;
+  --text-dim:    #336644;
+  --text-mid:    #00cc66;
+  --mono:        'Share Tech Mono', 'Courier New', monospace;
+  --display:     'VT323', monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--bg);
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  /* Subtle scanline overlay */
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 136, 0.015) 2px,
+    rgba(0, 255, 136, 0.015) 4px
+  );
+}
+
+/* ─── SCROLLBAR ──────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--green-dim); }
+::-webkit-scrollbar-thumb:hover { background: var(--green); }
+
+/* ─── TOPBAR ─────────────────────────────── */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 42px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-panel);
+  flex-shrink: 0;
+  gap: 16px;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.logo {
+  font-family: var(--display);
+  font-size: 22px;
+  color: var(--green);
+  letter-spacing: 3px;
+  text-shadow: 0 0 10px var(--green);
+}
+
+.version {
+  color: var(--text-dim);
+  font-size: 11px;
+}
+
+.topbar-center {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-mid);
+  flex: 1;
+  justify-content: center;
+}
+
+.status-item { color: var(--text-mid); display: flex; align-items: center; gap: 8px; }
+.status-item span { color: var(--green); font-weight: bold; }
+.divider { color: var(--text-dim); }
+
+.mini-graph {
+  border: 1px solid var(--green-dark);
+  background: rgba(0, 255, 136, 0.05);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.key-label {
+  color: var(--text-dim);
+  font-size: 11px;
+}
+
+#api-key {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 8px;
+  width: 140px;
+  outline: none;
+}
+
+#api-key:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 6px var(--green-glow);
+}
+
+#connect-btn {
+  background: var(--green-dark);
+  border: 1px solid var(--green);
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+
+#connect-btn:hover {
+  background: var(--green);
+  color: var(--bg);
+}
+
+/* ─── LAYOUT ─────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  flex: 1;
+  overflow: hidden;
+  gap: 0;
+}
+
+/* ─── PANELS ─────────────────────────────── */
+.panel {
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-panel2);
+  flex-shrink: 0;
+}
+
+.panel-title {
+  font-size: 11px;
+  color: var(--green-dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.toggle-hidden {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--text-dim);
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-hidden input {
+  cursor: pointer;
+  accent-color: var(--green);
+}
+
+.toggle-hidden:hover {
+  color: var(--green);
+}
+
+/* ─── LEFT PANEL ─────────────────────────── */
+.panel-left {
+  border-right: 1px solid var(--border);
+  border-bottom: none;
+  border-top: none;
+  border-left: none;
+}
+
+.path-bar {
+  padding: 5px 12px;
+  font-size: 11px;
+  color: var(--cyan);
+  border-bottom: 1px solid var(--border);
+  background: #030a06;
+  word-break: break-all;
+  flex-shrink: 0;
+}
+
+.file-tree {
+  overflow-y: auto;
+  flex: 1;
+  padding: 4px 0;
+}
+
+.placeholder {
+  padding: 20px 16px;
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+/* File/Folder entries */
+.file-entry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-mid);
+  border-left: 3px solid transparent;
+  user-select: none;
+}
+
+.file-entry:hover {
+  background: var(--green-glow);
+  color: var(--green);
+}
+
+.file-entry.selected {
+  background: rgba(0, 255, 136, 0.1);
+  border-left-color: var(--green);
+  color: var(--green);
+}
+
+.file-entry.is-dir { color: var(--green); }
+.file-entry.is-dir:hover { color: #fff; }
+
+.file-entry .entry-icon { font-size: 13px; flex-shrink: 0; }
+.file-entry .entry-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--amber);
+  border-left: 3px solid transparent;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+.back-btn:hover { background: rgba(255, 170, 0, 0.1); color: var(--amber); }
+
+/* ─── MAIN PANEL ─────────────────────────── */
+.panel-main {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-panel);
+}
+
+.tabs-nav {
+  display: flex;
+  background: var(--bg-panel2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 10px 20px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: all 0.2s;
+}
+
+.tab-btn:hover {
+  color: var(--green);
+  background: var(--green-glow);
+}
+
+.tab-btn.active {
+  color: var(--green);
+  background: var(--bg-panel);
+  border-bottom: 2px solid var(--green);
+  padding-bottom: 8px; /* offset for border */
+}
+
+.tab-content {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.tab-content.active {
+  display: flex;
+}
+
+/* ─── ACTIONS PANEL ──────────────────────── */
+.panel-actions {
+  flex-shrink: 0;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+
+.selected-path-label {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.selected-path-label span {
+  color: var(--cyan);
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--bg-panel);
+  align-items: center;
+}
+
+.btn-group-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  margin-left: 8px;
+  margin-right: 4px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 18px;
+  background: var(--bg);
+  border: 1px solid var(--green-dim);
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: none;
+}
+
+.action-btn:hover:not(:disabled) {
+  background: var(--green-dark);
+  border-color: var(--green);
+  box-shadow: 0 0 8px var(--green-glow);
+  color: #fff;
+}
+
+.action-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.action-btn--danger { border-color: #662222; color: var(--red); }
+.action-btn--danger:hover:not(:disabled) { background: #1a0000; border-color: var(--red); box-shadow: 0 0 8px rgba(255,68,68,0.2); color: #fff; }
+
+.action-btn--info { border-color: #004466; color: var(--cyan); }
+.action-btn--info:hover:not(:disabled) { background: #001a26; border-color: var(--cyan); box-shadow: 0 0 8px rgba(0,204,255,0.15); color: #fff; }
+
+.btn-icon { font-size: 14px; }
+
+/* ─── TERMINAL PANEL ─────────────────────── */
+.panel-terminal {
+  flex: 1;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  border-top: 1px solid var(--border);
+  min-height: 0;
+}
+
+.terminal-controls {
+  display: flex;
+  gap: 6px;
+}
+
+.ctrl-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 2px 8px;
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+.ctrl-btn:hover { border-color: var(--green-dim); color: var(--green); }
+
+.panel-logs {
+  flex: 1;
+  border: none;
+}
+
+.log-viewer {
+  flex: 1;
+  background: #020b05;
+  color: var(--text-mid);
+  padding: 12px 16px;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.5;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* ─── EDITOR PANEL ───────────────────────── */
+.panel-editor {
+  flex: 1;
+  border: none;
+}
+
+#monaco-container {
+  flex: 1;
+  background: #1e1e1e; /* Monaco default dark */
+  overflow: hidden;
+}
+
+.editor-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#editor-filename {
+  font-size: 11px;
+  color: var(--cyan);
+}
+
+#terminal-container {
+  flex: 1;
+  padding: 8px;
+  background: #020b05;
+  overflow: hidden; /* xterm addon-fit handles overflow */
+}
+
+.xterm-viewport {
+  /* custom scrollbar for xterm */
+  width: 6px !important;
+}
+.xterm-viewport::-webkit-scrollbar { width: 6px; }
+.xterm-viewport::-webkit-scrollbar-track { background: var(--bg); }
+.xterm-viewport::-webkit-scrollbar-thumb { background: var(--green-dim); }
+.xterm-viewport::-webkit-scrollbar-thumb:hover { background: var(--green); }
+
+.dim { color: var(--text-dim); }
+.ok  { color: var(--green); }
+.err { color: var(--red); }
+.inf { color: var(--cyan); }
+.warn { color: var(--amber); }
+
+/* CPU/RAM meter bars */
+.meter-bar {
+  display: inline-block;
+  background: var(--green-dim);
+  height: 8px;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+/* Running indicator */
+.running-indicator {
+  color: var(--amber);
+  font-size: 11px;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
