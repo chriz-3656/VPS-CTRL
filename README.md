@@ -8,7 +8,6 @@ A lightweight, high-performance, and retro-styled VPS Management Dashboard. Moni
 ## ✨ Features
 
 - **📊 Live System Monitoring:** Real-time CPU and RAM usage with interactive mini-graphs.
-- **🌓 Theme Toggle:** Switch between a signature "Retro Dark" mode and a "Clean Light" mode.
 - **📁 File Explorer:** Navigate your VPS file system with ease. Includes hidden file toggling.
 - **🖥️ Full PTY Terminal:** Integrated `xterm.js` terminal with `node-pty` support. Run interactive commands like `nano`, `vim`, and `top`.
 - **📝 Inbuilt Code Editor:** Powered by **Monaco Editor** (VS Code engine). Edit and save files directly with syntax highlighting.

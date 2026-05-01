@@ -2,8 +2,6 @@
    VPS_CTRL — Frontend Logic
    ───────────────────────────────────────── */
 
-loadTheme();
-
 let connected = false;
 let selectedPath = null;
 let statusInterval = null;
@@ -36,42 +34,6 @@ const loginOverlay  = document.getElementById('login-overlay');
 const loginPassword = document.getElementById('login-password');
 const loginError    = document.getElementById('login-error');
 const logoutBtn     = document.getElementById('logout-btn');
-
-// ─── Theme Management ──────────────────────
-function toggleTheme() {
-  const isLight = document.body.classList.toggle('light-mode');
-  localStorage.setItem('vps-theme', isLight ? 'light' : 'dark');
-  updateComponentThemes();
-}
-
-function loadTheme() {
-  const theme = localStorage.getItem('vps-theme');
-  if (theme === 'light') {
-    document.body.classList.add('light-mode');
-  }
-}
-
-function updateComponentThemes() {
-  const isLight = document.body.classList.contains('light-mode');
-  
-  if (term) {
-    term.options.theme = isLight ? {
-      background: '#ffffff',
-      foreground: '#1c1e21',
-      cursor: '#1c1e21',
-      selectionBackground: '#00ff8833'
-    } : {
-      background: '#020b05',
-      foreground: '#00ff88',
-      cursor: '#00ff88',
-      selectionBackground: '#00ff8833'
-    };
-  }
-
-  if (editor) {
-    monaco.editor.setTheme(isLight ? 'vs' : 'vps-theme');
-  }
-}
 
 // ─── Authentication ────────────────────────
 async function login() {
@@ -159,13 +121,8 @@ const ANSI_COLORS = {
 };
 
 function initTerminal() {
-  const isLight = document.body.classList.contains('light-mode');
   term = new Terminal({
-    theme: isLight ? {
-      background: '#ffffff',
-      foreground: '#1c1e21',
-      cursor: '#1c1e21',
-    } : {
+    theme: {
       background: '#020b05',
       foreground: '#00ff88',
       cursor: '#00ff88',
@@ -259,11 +216,10 @@ function initEditor() {
       }
     });
 
-    const isLight = document.body.classList.contains('light-mode');
     editor = monaco.editor.create(document.getElementById('monaco-container'), {
       value: '',
       language: 'javascript',
-      theme: isLight ? 'vs' : 'vps-theme',
+      theme: 'vps-theme',
       automaticLayout: true,
       fontSize: 13,
       fontFamily: "'Share Tech Mono', 'Courier New', monospace",
@@ -636,4 +592,4 @@ loginPassword.addEventListener('keydown', e => {
 // ─── Init ─────────────────────────
 initTerminal();
 initEditor();
-initDashboard(); // Auto-login check
+initDashboard();

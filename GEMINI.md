@@ -14,7 +14,6 @@ This project is a lightweight, web-based VPS Management Dashboard built with Nod
 ## Features
 
 - **System Status:** Real-time monitoring of CPU load, RAM usage, and system uptime, featuring **live mini-graphs** in the top bar.
-- **Theme Toggle:** Switch between "Retro Dark" and "Clean Light" modes with persistence.
 - **Tabbed Interface:** Organize your workspace with dedicated sections for management and monitoring.
 - **Interactive Terminal:** Fully functional pseudo-terminal (PTY) using `xterm.js`, supporting interactive commands like `nano`, `top`, and `vim`. Automatically synchronizes its working directory when navigating the File Explorer.
 - **Live Logs:** Dedicated logs viewer to quickly inspect PM2 or application logs for the selected directory.
