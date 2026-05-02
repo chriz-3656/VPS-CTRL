@@ -10,14 +10,14 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 
 const app = express();
-const PORT = 5050;
-const DASHBOARD_PASSWORD = process.env.DASHBOARD_PASSWORD || 'admin';
+const PORT = process.env.PORT || 5050;
+const DASHBOARD_KEY = process.env.DASHBOARD_KEY || 'admin';
 const JWT_SECRET = process.env.JWT_SECRET || 'vps-ctrl-secret-99';
 const ALLOWED_ROOT = os.homedir();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 
 // ─── Auth Middleware ───────────────────────────────────────────────
 function authenticate(req, res, next) {
@@ -42,7 +42,7 @@ app.post('/login', async (req, res) => {
 
   // For simplicity, we compare with the env var directly
   // In a real multi-user app, we'd use bcrypt.compare with a stored hash
-  if (password === DASHBOARD_PASSWORD) {
+  if (password === DASHBOARD_KEY) {
     const token = jwt.sign({ authorized: true }, JWT_SECRET, { expiresIn: '24h' });
     res.cookie('token', token, {
       httpOnly: true,
@@ -87,10 +87,13 @@ app.get('/files', authenticate, (req, res) => {
       path: path.join(safePath, entry.name)
     }));
 
+    const isNode = entries.some(e => e.name === 'package.json');
+
     res.json({
       current: safePath,
       parent: safePath !== ALLOWED_ROOT ? path.dirname(safePath) : null,
-      entries: result
+      entries: result,
+      projectType: isNode ? 'node' : null
     });
   });
 });
@@ -182,7 +185,7 @@ function formatUptime(seconds) {
 }
 
 // ─── Action System ─────────────────────────────────────────────────
-const ALLOWED_ACTIONS = ['deploy', 'install', 'pm2_start', 'pm2_restart', 'pm2_stop', 'logs', 'npm_start', 'npm_dev', 'kill_port', 'kill_pid'];
+const ALLOWED_ACTIONS = ['deploy', 'install', 'pm2_start', 'pm2_restart', 'pm2_stop', 'logs', 'npm_start', 'npm_dev', 'kill_port', 'kill_pid', 'tail_file'];
 
 const COMMANDS = {
   deploy:      'git pull',
@@ -194,7 +197,8 @@ const COMMANDS = {
   npm_start:   'npm start',
   npm_dev:     'npm run dev',
   kill_port:   'fuser -k',
-  kill_pid:    'kill -9'
+  kill_pid:    'kill -9',
+  tail_file:   'tail -n 50'
 };
 
 app.post('/action', authenticate, (req, res) => {
@@ -223,6 +227,9 @@ app.post('/action', authenticate, (req, res) => {
   } else if (action === 'kill_pid') {
     if (!pid) return res.status(400).json({ error: 'PID required for kill_pid' });
     cmd = `${cmd} ${pid}`;
+  } else if (action === 'tail_file') {
+    const filename = path.basename(targetPath);
+    cmd = `${cmd} "${filename}"`;
   }
 
   exec(cmd, { cwd: execCwd, env: getCleanEnv(), timeout: 60000, maxBuffer: 1024 * 1024 * 2 }, (err, stdout, stderr) => {
@@ -264,7 +271,7 @@ const pty = require('node-pty');
 
 // ─── Serve frontend ────────────────────────────────────────────────
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
 
 const server = http.createServer(app);
@@ -323,6 +330,6 @@ wss.on('connection', (ws, req) => {
 
 server.listen(PORT, () => {
   console.log(`VPS Dashboard running on http://localhost:${PORT}`);
-  console.log(`Password: ${DASHBOARD_PASSWORD === 'admin' ? 'admin (DEFAULT - PLEASE CHANGE!)' : '********'}`);
+  console.log(`Password: ${DASHBOARD_KEY === 'admin' ? 'admin (DEFAULT - PLEASE CHANGE!)' : '********'}`);
   console.log(`Allowed root: ${ALLOWED_ROOT}`);
 });

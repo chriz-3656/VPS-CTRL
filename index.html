@@ -3,159 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VPS-CTRL | High-Performance VPS Dashboard</title>
+    <title>VPS-CTRL | Lightweight self-hosted VPS management panel</title>
     <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap">
-    <style>
-        :root {
-            --green: #00ff88;
-            --green-dim: #00994d;
-            --bg: #030d07;
-            --bg-panel: #060f09;
-            --text: #00ff88;
-            --text-dim: #336644;
-            --border: #0f3a1e;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Share Tech Mono', monospace;
-            line-height: 1.6;
-            background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 136, 0.015) 2px, rgba(0, 255, 136, 0.015) 4px);
-        }
-
-        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
-
-        header { text-align: center; padding: 60px 0; border-bottom: 1px solid var(--border); }
-        .logo { width: 180px; filter: drop-shadow(0 0 10px var(--green)); }
-        h1 { font-family: 'VT323', monospace; font-size: 64px; letter-spacing: 5px; margin: 20px 0; }
-        .tagline { color: var(--text-dim); font-size: 18px; letter-spacing: 2px; }
-
-        .hero-actions { margin-top: 40px; display: flex; justify-content: center; gap: 20px; }
-        .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            border: 1px solid var(--green);
-            color: var(--green);
-            text-decoration: none;
-            font-size: 14px;
-            letter-spacing: 2px;
-            transition: all 0.3s;
-            background: transparent;
-        }
-        .btn:hover { background: var(--green); color: var(--bg); box-shadow: 0 0 20px rgba(0, 255, 136, 0.4); }
-        .btn-primary { background: rgba(0, 255, 136, 0.1); }
-
-        section { padding: 60px 0; border-bottom: 1px solid var(--border); }
-        h2 { font-family: 'VT323', monospace; font-size: 36px; color: var(--green-dim); margin-bottom: 30px; letter-spacing: 3px; border-left: 4px solid var(--green); padding-left: 15px; }
-
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
-        .card { background: var(--bg-panel); border: 1px solid var(--border); padding: 25px; transition: transform 0.3s; }
-        .card:hover { transform: translateY(-5px); border-color: var(--green); }
-        .card h3 { margin-bottom: 15px; color: var(--green); }
-        .card p { font-size: 14px; color: var(--text-dim); }
-
-        code { background: #000; color: #ffaa00; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
-        pre { background: #000; padding: 20px; border: 1px solid var(--border); overflow-x: auto; margin: 20px 0; }
-        pre code { color: var(--green); background: transparent; padding: 0; }
-
-        .feature-list { list-style: none; }
-        .feature-list li { margin-bottom: 15px; padding-left: 25px; position: relative; }
-        .feature-list li::before { content: '>'; position: absolute; left: 0; color: var(--green); }
-
-        footer { text-align: center; padding: 60px 0; color: var(--text-dim); font-size: 14px; }
-        footer a { color: var(--green); text-decoration: none; }
-
-        @media (max-width: 600px) {
-            h1 { font-size: 40px; }
-            .hero-actions { flex-direction: column; }
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <img src="logo.png" alt="VPS-CTRL" class="logo">
-            <h1>VPS-CTRL</h1>
-            <p class="tagline">ULTIMATE VPS MANAGEMENT COMMAND CENTER</p>
-            <div class="hero-actions">
-                <a href="https://github.com/chriz-3656/VPS-CTRL" class="btn btn-primary">VIEW ON GITHUB</a>
-                <a href="#setup" class="btn">QUICK START</a>
+    <div class="glow-bg"></div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="logo.png" alt="Logo">
+                <span>VPS-CTRL</span>
             </div>
-        </header>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#installation">Install</a>
+                <a href="https://github.com/chriz-3656/VPS-CTRL" class="btn btn-nav">GITHUB</a>
+            </div>
+        </div>
+    </nav>
 
-        <section id="overview">
-            <h2>01. OVERVIEW</h2>
-            <p>VPS-CTRL is a lightweight, high-performance dashboard designed for developers who need full control over their remote servers without the overhead of heavy enterprise tools. It combines real-time monitoring, a robust file explorer, an integrated code editor, and a full interactive terminal into a single, secure web interface.</p>
-        </section>
-
-        <section id="features">
-            <h2>02. CAPABILITIES</h2>
-            <div class="grid">
-                <div class="card">
-                    <h3>📊 Live Metrics</h3>
-                    <p>High-resolution CPU and RAM monitoring with interactive mini-graphs and usage history tracking.</p>
+    <main>
+        <!-- HERO -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-badge">VERSION 1.1.0 // STABLE</div>
+                <h1>VPS-CTRL 🚀</h1>
+                <p class="tagline">Lightweight self-hosted VPS management panel for modern developers.</p>
+                <div class="hero-actions">
+                    <a href="#installation" class="btn btn-primary">GET STARTED</a>
+                    <a href="https://github.com/chriz-3656/VPS-CTRL" class="btn btn-secondary">VIEW ON GITHUB</a>
                 </div>
-                <div class="card">
-                    <h3>🚀 Process Manager</h3>
-                    <p>New! Real-time process explorer that automatically detects running apps, their PIDs, and active ports.</p>
-                </div>
-                <div class="card">
-                    <h3>🖥️ PTY Terminal</h3>
-                    <p>Real pseudo-terminal integration via WebSockets. Run interactive apps like htop, nano, and vim natively.</p>
-                </div>
-                <div class="card">
-                    <h3>📝 Code Editor</h3>
-                    <p>Built-in Monaco Editor (VS Code core) with syntax highlighting, auto-detection, and remote saving functionality.</p>
-                </div>
-                <div class="card">
-                    <h3>📁 File Control</h3>
-                    <p>Advanced explorer with hidden file support. The terminal automatically syncs its path to your navigation.</p>
-                </div>
-                <div class="card">
-                    <h3>🔒 JWT Security</h3>
-                    <p>Industrial-grade authentication using JWT, HttpOnly secure cookies, and strict environment isolation.</p>
+                <div class="terminal-mockup">
+                    <div class="terminal-header">
+                        <div class="terminal-dots"><span></span><span></span><span></span></div>
+                        <div class="terminal-title">vps-ctrl --status</div>
+                    </div>
+                    <div class="terminal-body">
+                        <p><span class="cyan">system@vps:~$</span> vps-ctrl start</p>
+                        <p class="green">[OK] Dashboard initialized on port 5050</p>
+                        <p class="green">[OK] Secure JWT session established</p>
+                        <p class="green">[OK] PTY Terminal proxy active</p>
+                        <p><span class="cyan">system@vps:~$</span> _<span class="cursor"></span></p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section id="setup">
-            <h2>03. DEPLOYMENT</h2>
-            <p>Follow these steps to initialize your control center:</p>
-            <pre><code># 1. Clone the core
-git clone https://github.com/chriz-3656/VPS-CTRL.git
-
-# 2. Install dependencies
-cd VPS-CTRL
-npm install
-
-# 3. Configure environment
-cp .env.example .env
-nano .env
-
-# 4. Launch system
-npm start</code></pre>
+        <!-- WHAT IS VPS-CTRL -->
+        <section class="overview" id="about">
+            <div class="container">
+                <div class="section-header">
+                    <h2>What is VPS-CTRL?</h2>
+                    <div class="divider"></div>
+                </div>
+                <p class="overview-text">
+                    VPS-CTRL is a high-performance web dashboard that bridges the gap between raw SSH and complex enterprise panels. It provides a secure, web-based environment to monitor system health, explore files, edit code, and manage processes without ever opening a separate SSH client.
+                </p>
+            </div>
         </section>
 
-        <section id="auth">
-            <h2>04. INDUSTRIAL SECURITY</h2>
-            <p>VPS-CTRL uses a hardened security stack to ensure your terminal remains private. All sessions are protected by encrypted JSON Web Tokens (JWT) stored in secure, read-only cookies.</p>
-            <ul class="feature-list">
-                <li><strong>Environment Isolation:</strong> Prevents child processes from inheriting dashboard port/secrets.</li>
-                <li><strong>Port Management:</strong> Quick-kill tools for resolving <code>EADDRINUSE</code> conflicts instantly.</li>
-                <li><strong>Automatic Session Timeout:</strong> Ensures your dashboard is never left exposed.</li>
-                <li><strong>Path Restriction:</strong> Operations are strictly jailed to the system home directory.</li>
-            </ul>
+        <!-- FEATURES GRID -->
+        <section class="features" id="features">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Core Capabilities</h2>
+                    <div class="divider"></div>
+                </div>
+                <div class="grid">
+                    <div class="card">
+                        <div class="card-icon">📁</div>
+                        <h3>File Explorer</h3>
+                        <p>Sophisticated filesystem navigation with hidden file support and terminal path sync.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">🖥️</div>
+                        <h3>PTY Terminal</h3>
+                        <p>Full-blown interactive pseudo-terminal supporting nano, vim, and top natively.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">📝</div>
+                        <h3>Code Editor</h3>
+                        <p>Monaco Editor integration with syntax highlighting and custom retro theme.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">🚀</div>
+                        <h3>Process Manager</h3>
+                        <p>Monitor running apps, view active ports, and manage PIDs with one click.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">📊</div>
+                        <h3>Live Monitoring</h3>
+                        <p>Real-time CPU/RAM tracking with interactive mini-graphs and history.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">🔒</div>
+                        <h3>JWT Security</h3>
+                        <p>Industrial-grade authentication with secure cookies and environment isolation.</p>
+                    </div>
+                </div>
+            </div>
         </section>
 
-        <footer>
-            <p>SYSTEM STATUS: ACTIVE // VERSION: 1.1.0</p>
-            <p>Designed and Built by <a href="https://github.com/chriz-3656">chriz-3656</a></p>
-            <p>Distributed under the MIT License</p>
-        </footer>
-    </div>
+        <!-- SCREENSHOTS -->
+        <section class="showcase">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Product Preview</h2>
+                    <div class="divider"></div>
+                </div>
+                <div class="screenshot-container">
+                    <img src="screenshots/dashboard.png" alt="Dashboard Preview" class="main-shot">
+                </div>
+            </div>
+        </section>
+
+        <!-- HOW IT WORKS -->
+        <section class="workflow">
+            <div class="container">
+                <div class="section-header">
+                    <h2>How it Works</h2>
+                    <div class="divider"></div>
+                </div>
+                <div class="workflow-steps">
+                    <div class="step">
+                        <div class="step-num">01</div>
+                        <p>Open Browser</p>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step">
+                        <div class="step-num">02</div>
+                        <p>Secure VPS Proxy</p>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step">
+                        <div class="step-num">03</div>
+                        <p>Execute Commands</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- INSTALLATION -->
+        <section class="installation" id="installation">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Installation</h2>
+                    <div class="divider"></div>
+                </div>
+                <div class="install-box">
+                    <div class="install-header">
+                        <span class="install-title">One-line Install</span>
+                        <button class="copy-btn" onclick="copyInstall()">COPY</button>
+                    </div>
+                    <pre><code id="install-cmd">bash <(curl -s https://raw.githubusercontent.com/chriz-3656/VPS-CTRL/main/scripts/install.sh)</code></pre>
+                </div>
+                <p class="install-note">Or clone manually from GitHub: <code>git clone https://github.com/chriz-3656/VPS-CTRL.git</code></p>
+            </div>
+        </section>
+
+        <!-- SECURITY -->
+        <section class="security">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Security Infrastructure</h2>
+                    <div class="divider"></div>
+                </div>
+                <div class="grid grid-2">
+                    <div class="card">
+                        <h3>Environment Isolation</h3>
+                        <p>Prevents child processes from inheriting dashboard port/secrets, avoiding EADDRINUSE conflicts.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Secure Sessions</h3>
+                        <p>All actions require encrypted JWT tokens stored in HttpOnly cookies, protecting against session theft.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- USE CASES -->
+        <section class="use-cases">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Use Cases</h2>
+                    <div class="divider"></div>
+                </div>
+                <div class="grid grid-3">
+                    <div class="case-card">
+                        <span>🤖</span>
+                        <h4>Discord Bots</h4>
+                    </div>
+                    <div class="case-card">
+                        <span>🌐</span>
+                        <h4>Web Apps</h4>
+                    </div>
+                    <div class="case-card">
+                        <span>🛠️</span>
+                        <h4>Personal Panel</h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- OPEN SOURCE -->
+        <section class="open-source">
+            <div class="container">
+                <div class="os-box">
+                    <h2>Join the Project</h2>
+                    <p>VPS-CTRL is 100% Open Source and MIT Licensed.</p>
+                    <a href="https://github.com/chriz-3656/VPS-CTRL" class="btn btn-primary">FORK ON GITHUB</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <img src="logo.png" alt="Logo">
+                    <span>VPS-CTRL v1.1.0</span>
+                </div>
+                <div class="footer-right">
+                    <p>Designed and Built by <a href="https://github.com/chriz-3656">chriz-3656</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>

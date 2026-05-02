@@ -1,10 +1,10 @@
 {
-  "name": "vps-dashboard",
-  "version": "1.0.0",
-  "description": "Lightweight VPS Management Dashboard",
-  "main": "server.js",
+  "name": "vps-ctrl",
+  "version": "1.1.0",
+  "description": "Lightweight self-hosted VPS management panel",
+  "main": "server/index.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server/index.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

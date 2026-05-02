@@ -300,10 +300,14 @@ async function refreshLogs() {
   logViewer.innerHTML = '<span class="dim">[ fetching logs... ]</span>';
   
   try {
+    // If a file is selected, attempt to tail it
+    const isFile = document.querySelector('.file-entry.selected')?.dataset.type === 'file';
+    const action = isFile ? 'tail_file' : 'logs';
+
     const data = await apiFetch('/action', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'logs', path })
+      body: JSON.stringify({ action, path })
     });
     
     logViewer.textContent = data.output || '(no logs found)';
@@ -472,6 +476,18 @@ async function loadFiles(dirPath) {
     lastFsData = data;
     renderFileTree(data);
     currentPath.textContent = data.current;
+    
+    // Smart Actions: Show/Hide NPM buttons
+    const npmButtons = document.querySelectorAll('.action-btn[data-action^="npm_"]');
+    npmButtons.forEach(btn => {
+      btn.style.display = data.projectType === 'node' ? 'flex' : 'none';
+    });
+
+    // Update group labels if they become empty
+    const directNpmLabel = document.querySelector('.btn-group-label:nth-of-type(2)');
+    if (directNpmLabel) {
+      directNpmLabel.style.display = data.projectType === 'node' ? 'block' : 'none';
+    }
     
     // Sync terminal path
     syncTerminalPath(data.current);
