@@ -89,7 +89,7 @@
 
         <section id="overview">
             <h2>01. OVERVIEW</h2>
-            <p>VPS-CTRL is a lightweight, high-performance dashboard designed for developers who need full control over their remote servers without the overhead of heavy enterprise tools. It combines real-time monitoring, a robust file explorer, and a full interactive terminal into a single, secure web interface.</p>
+            <p>VPS-CTRL is a lightweight, high-performance dashboard designed for developers who need full control over their remote servers without the overhead of heavy enterprise tools. It combines real-time monitoring, a robust file explorer, an integrated code editor, and a full interactive terminal into a single, secure web interface.</p>
         </section>
 
         <section id="features">
@@ -97,7 +97,11 @@
             <div class="grid">
                 <div class="card">
                     <h3>📊 Live Metrics</h3>
-                    <p>High-resolution CPU and RAM monitoring with interactive mini-graphs for instant health checks.</p>
+                    <p>High-resolution CPU and RAM monitoring with interactive mini-graphs and usage history tracking.</p>
+                </div>
+                <div class="card">
+                    <h3>🚀 Process Manager</h3>
+                    <p>New! Real-time process explorer that automatically detects running apps, their PIDs, and active ports.</p>
                 </div>
                 <div class="card">
                     <h3>🖥️ PTY Terminal</h3>
@@ -105,19 +109,15 @@
                 </div>
                 <div class="card">
                     <h3>📝 Code Editor</h3>
-                    <p>Built-in Monaco Editor (VS Code core) with syntax highlighting, auto-detection, and remote saving.</p>
+                    <p>Built-in Monaco Editor (VS Code core) with syntax highlighting, auto-detection, and remote saving functionality.</p>
                 </div>
                 <div class="card">
                     <h3>📁 File Control</h3>
                     <p>Advanced explorer with hidden file support. The terminal automatically syncs its path to your navigation.</p>
                 </div>
                 <div class="card">
-                    <h3>⚙️ PM2 & NPM</h3>
-                    <p>Deploy and manage processes with dedicated PM2 controls and direct NPM execution buttons.</p>
-                </div>
-                <div class="card">
-                    <h3>🔒 Security</h3>
-                    <p>JWT authentication, HttpOnly secure cookies, and strict directory traversal prevention.</p>
+                    <h3>🔒 JWT Security</h3>
+                    <p>Industrial-grade authentication using JWT, HttpOnly secure cookies, and strict environment isolation.</p>
                 </div>
             </div>
         </section>
@@ -133,9 +133,7 @@ cd VPS-CTRL
 npm install
 
 # 3. Configure environment
-# Create .env from template
 cp .env.example .env
-# Edit your password and secret
 nano .env
 
 # 4. Launch system
@@ -143,17 +141,18 @@ npm start</code></pre>
         </section>
 
         <section id="auth">
-            <h2>04. AUTHENTICATION</h2>
-            <p>VPS-CTRL uses an industrial-grade security stack to ensure your terminal remains private. All sessions are protected by encrypted JSON Web Tokens (JWT) stored in secure, read-only cookies.</p>
+            <h2>04. INDUSTRIAL SECURITY</h2>
+            <p>VPS-CTRL uses a hardened security stack to ensure your terminal remains private. All sessions are protected by encrypted JSON Web Tokens (JWT) stored in secure, read-only cookies.</p>
             <ul class="feature-list">
-                <li>Automatic session timeout for safety.</li>
-                <li>Encryption of all WebSocket terminal traffic.</li>
-                <li>Path restriction to the system home directory.</li>
+                <li><strong>Environment Isolation:</strong> Prevents child processes from inheriting dashboard port/secrets.</li>
+                <li><strong>Port Management:</strong> Quick-kill tools for resolving <code>EADDRINUSE</code> conflicts instantly.</li>
+                <li><strong>Automatic Session Timeout:</strong> Ensures your dashboard is never left exposed.</li>
+                <li><strong>Path Restriction:</strong> Operations are strictly jailed to the system home directory.</li>
             </ul>
         </section>
 
         <footer>
-            <p>SYSTEM STATUS: ACTIVE // VERSION: 1.0.0</p>
+            <p>SYSTEM STATUS: ACTIVE // VERSION: 1.1.0</p>
             <p>Designed and Built by <a href="https://github.com/chriz-3656">chriz-3656</a></p>
             <p>Distributed under the MIT License</p>
         </footer>
