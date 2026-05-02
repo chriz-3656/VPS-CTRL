@@ -122,7 +122,6 @@ body {
 
 .sidebar-left { border-right: 1px solid var(--border); }
 .sidebar-right { border-left: 1px solid var(--border); }
-
 /* MAIN AREA */
 .panel-main {
   flex: 1;
@@ -130,6 +129,8 @@ body {
   flex-direction: column;
   overflow: hidden;
   background: var(--bg);
+  min-width: 0;
+}
   min-width: 0; /* Important for flex child with overflow */
 }
 
@@ -247,8 +248,19 @@ body {
 }
 .tab-btn.active { color: var(--green); border-bottom: 2px solid var(--green); background: var(--bg); }
 
-.tab-content { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+.tab-content { 
+  display: none; 
+  flex: 1; 
+  flex-direction: column; 
+  overflow: hidden; 
+  width: 100%;
+  height: 100%;
+}
 .tab-content.active { display: flex; }
+
+.tab-content > .panel {
+  flex: 1;
+}
 
 /* ACTIONS */
 .action-buttons {
