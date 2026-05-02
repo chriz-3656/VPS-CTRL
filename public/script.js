@@ -477,7 +477,7 @@ async function loadFiles(dirPath) {
     // Smart Actions: Show/Hide NPM buttons
     const npmButtons = document.querySelectorAll('.action-btn[data-action^="npm_"]');
     npmButtons.forEach(btn => {
-      btn.style.display = data.projectType === 'node' ? 'flex' : 'none';
+      btn.style.display = data.projectType === 'node' ? 'inline-flex' : 'none';
     });
 
     // Update group labels if they become empty
