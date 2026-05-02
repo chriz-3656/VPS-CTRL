@@ -99,7 +99,7 @@ body {
   cursor: pointer;
 }
 
-/* ─── LAYOUT (TRIPLE COLUMN) ──────────────── */
+/* ─── LAYOUT (PRO SPLIT) ────────────────── */
 .layout {
   display: flex;
   flex: 1;
@@ -113,6 +113,11 @@ body {
   flex-direction: column;
   background: var(--bg-panel);
   flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.sidebar-right.hidden {
+  display: none !important;
 }
 
 .sidebar-left { border-right: 1px solid var(--border); }
@@ -125,6 +130,7 @@ body {
   flex-direction: column;
   overflow: hidden;
   background: var(--bg);
+  min-width: 0; /* Important for flex child with overflow */
 }
 
 .tab-contents-container {
@@ -161,7 +167,17 @@ body {
   gap: 8px;
 }
 
-/* PROCESS TABLE (SIDEBAR OPTIMIZED) */
+.toggle-hidden {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+.toggle-hidden input { cursor: pointer; accent-color: var(--green); }
+
+/* PROCESS TABLE */
 .sidebar-table-container {
   flex: 1;
   overflow-y: auto;
@@ -250,7 +266,6 @@ body {
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-right: 4px;
-  user-select: none;
   white-space: nowrap;
 }
 
@@ -266,27 +281,15 @@ body {
   font-size: 11px;
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.2s;
 }
-
-.action-btn:hover:not(:disabled) {
-  background: var(--green-dark);
-  border-color: var(--green);
-  box-shadow: 0 0 10px var(--green-glow);
-  color: #fff;
-}
-
-.action-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-  border-color: var(--border);
-}
-
 .action-btn--danger { border-color: #662222; color: var(--red); }
-.action-btn--danger:hover:not(:disabled) { background: #330000; border-color: var(--red); }
-
 .action-btn--info { border-color: #004466; color: var(--cyan); }
-.action-btn--info:hover:not(:disabled) { background: #001a26; border-color: var(--cyan); }
+
+.port-mgmt { display: flex; align-items: center; gap: 8px; }
+.mini-input {
+  background: #000; border: 1px solid var(--border); color: var(--green);
+  font-family: inherit; font-size: 11px; padding: 4px; width: 60px; outline: none;
+}
 
 /* TERMINAL & EDITOR */
 #terminal-container, #monaco-container { flex: 1; background: #020b05; padding: 8px; }
@@ -300,6 +303,9 @@ body {
 .err { color: var(--red); }
 .inf { color: var(--cyan); }
 .warn { color: var(--amber); }
+
+svg { vertical-align: middle; }
+.btn-icon { display: inline-flex; align-items: center; justify-content: center; }
 
 /* LOGIN OVERLAY */
 .overlay { position: fixed; inset: 0; background: rgba(3, 13, 7, 0.98); z-index: 9999; display: flex; align-items: center; justify-content: center; }

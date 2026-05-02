@@ -189,9 +189,9 @@ function switchTab(tabId) {
   const procSidebar = document.getElementById('sidebar-processes');
   if (procSidebar) {
     if (tabId === 'editor') {
-      procSidebar.style.display = 'none';
+      procSidebar.classList.add('hidden');
     } else {
-      procSidebar.style.display = 'flex';
+      procSidebar.classList.remove('hidden');
     }
   }
 
@@ -474,16 +474,16 @@ async function loadFiles(dirPath) {
     renderFileTree(data);
     currentPath.textContent = data.current;
     
-    // Smart Actions: Show/Hide NPM buttons
+    // Smart Actions: Enable/Disable NPM buttons based on detection
     const npmButtons = document.querySelectorAll('.action-btn[data-action^="npm_"]');
     npmButtons.forEach(btn => {
-      btn.style.display = data.projectType === 'node' ? 'inline-flex' : 'none';
+      btn.disabled = data.projectType !== 'node';
     });
 
-    // Update group labels if they become empty
+    // Update group labels visibility
     const directNpmLabel = document.querySelector('.btn-group-label:nth-of-type(2)');
     if (directNpmLabel) {
-      directNpmLabel.style.display = data.projectType === 'node' ? 'block' : 'none';
+      directNpmLabel.style.opacity = data.projectType === 'node' ? '1' : '0.3';
     }
     
     // Sync terminal path
