@@ -11,7 +11,7 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 const PORT = process.env.PORT || 5050;
-const DASHBOARD_KEY = process.env.DASHBOARD_KEY || 'admin';
+const DASHBOARD_KEY = process.env.DASHBOARD_KEY || process.env.DASHBOARD_PASSWORD || 'admin';
 const JWT_SECRET = process.env.JWT_SECRET || 'vps-ctrl-secret-99';
 const ALLOWED_ROOT = os.homedir();
 
