@@ -131,8 +131,6 @@ body {
   background: var(--bg);
   min-width: 0;
 }
-  min-width: 0; /* Important for flex child with overflow */
-}
 
 .tab-contents-container {
   flex: 1;
