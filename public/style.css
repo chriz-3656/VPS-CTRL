@@ -257,7 +257,19 @@ body {
 .tab-content.active { display: flex; }
 
 .tab-content > .panel {
+  /* Default: don't grow, let children define height */
+}
+
+/* Specific panels that SHOULD fill the screen */
+.panel-terminal, .panel-logs, .panel-editor {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-actions {
+  flex-shrink: 0;
+  border-bottom: none; /* Merge with panel below */
 }
 
 /* ACTIONS */
