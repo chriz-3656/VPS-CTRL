@@ -255,17 +255,91 @@ body {
   color: var(--green);
 }
 
-/* ─── LEFT PANEL ─────────────────────────── */
+/* ─── LEFT PANEL (SIDEBAR) ────────────────── */
 .panel-left {
   border-right: 1px solid var(--border);
-  border-bottom: none;
-  border-top: none;
-  border-left: none;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
 }
+
+.sidebar-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 200px;
+}
+
+.explorer-section {
+  border-bottom: 2px solid var(--border);
+}
+
+.processes-section {
+  flex: 1;
+  background: var(--bg-panel);
+}
+
+.sidebar-table-container {
+  flex: 1;
+  overflow-y: auto;
+  background: #020b05;
+}
+
+.proc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+}
+
+.proc-table th {
+  position: sticky;
+  top: 0;
+  background: var(--bg-panel2);
+  color: var(--text-dim);
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  font-weight: normal;
+  letter-spacing: 0.5px;
+}
+
+.proc-table td {
+  padding: 5px 8px;
+  border-bottom: 1px solid rgba(15, 58, 30, 0.2);
+  color: var(--text-mid);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 0; /* allows ellipsis with flex/grid/table */
+}
+
+.proc-table td:nth-child(2) { width: 40%; max-width: 100px; } /* Name col */
+
+.proc-table tr:hover td {
+  background: var(--green-glow);
+  color: var(--green);
+}
+
+.proc-pid { color: var(--cyan); }
+.proc-name { color: var(--green); font-weight: bold; }
+.proc-ports { color: var(--amber); }
+
+.kill-btn {
+  background: transparent;
+  border: 1px solid #662222;
+  color: var(--red);
+  font-family: var(--mono);
+  font-size: 8px;
+  padding: 1px 4px;
+  cursor: pointer;
+}
+.kill-btn:hover { background: #330000; border-color: var(--red); }
 
 .path-bar {
   padding: 5px 12px;
-  font-size: 11px;
+  font-size: 10px;
   color: var(--cyan);
   border-bottom: 1px solid var(--border);
   background: #030a06;
@@ -282,52 +356,8 @@ body {
 .placeholder {
   padding: 20px 16px;
   color: var(--text-dim);
-  font-size: 12px;
+  font-size: 11px;
 }
-
-/* File/Folder entries */
-.file-entry {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 12px;
-  cursor: pointer;
-  font-size: 12px;
-  color: var(--text-mid);
-  border-left: 3px solid transparent;
-  user-select: none;
-}
-
-.file-entry:hover {
-  background: var(--green-glow);
-  color: var(--green);
-}
-
-.file-entry.selected {
-  background: rgba(0, 255, 136, 0.1);
-  border-left-color: var(--green);
-  color: var(--green);
-}
-
-.file-entry.is-dir { color: var(--green); }
-.file-entry.is-dir:hover { color: #fff; }
-
-.file-entry .entry-icon { font-size: 13px; flex-shrink: 0; }
-.file-entry .entry-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-.back-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 12px;
-  cursor: pointer;
-  font-size: 12px;
-  color: var(--amber);
-  border-left: 3px solid transparent;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 4px;
-}
-.back-btn:hover { background: rgba(255, 170, 0, 0.1); color: var(--amber); }
 
 /* ─── MAIN PANEL ─────────────────────────── */
 .panel-main {

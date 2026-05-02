@@ -40,8 +40,8 @@ Stop wrestling with terminal multiplexers and complex SSH keys. Manage your enti
 *   **File Explorer:** Sophisticated filesystem navigation with hidden file support.
 *   **PTY Terminal:** Full-blown interactive pseudo-terminal (`xterm.js`) supporting `nano`, `vim`, and `top`.
 *   **Monaco Editor:** The power of VS Code in your browser with syntax highlighting and remote saving.
-*   **Process Manager:** Dedicated tab to monitor running apps, view active ports, and manage PIDs.
-*   **Smart Actions:** One-click deployment for Git, NPM, and PM2 workflows.
+*   **🚀 Process Manager:** Persistent sidebar utility to monitor running apps, view active ports, and manage PIDs in real-time.
+*   **⚙️ Smart Actions:** One-click deployment for Git, NPM, and PM2 workflows.
 
 ---
 

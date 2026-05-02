@@ -19,6 +19,7 @@ This project is a lightweight, web-based VPS Management Dashboard built with Nod
 - **Live Logs:** Dedicated logs viewer to quickly inspect PM2 or application logs for the selected directory.
 - **Code Editor:** Inbuilt Monaco Editor for viewing and editing files directly. Supports syntax highlighting and `Ctrl+S` to save. Double-click any file in the File Explorer to open it.
 - **File Explorer:** Browse directories, select target paths for actions, and toggle visibility of hidden files.
+- **Process Manager:** Persistent sidebar utility to monitor running apps, view active ports, and kill PIDs in real-time.
 - **Action System:** Trigger predefined commands for process management and deployment:
     - `deploy`: `git pull`
     - `install`: `npm install`

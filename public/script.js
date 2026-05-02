@@ -5,6 +5,7 @@
 let connected = false;
 let selectedPath = null;
 let statusInterval = null;
+let procInterval = null;
 let showHidden = false;
 let lastFsData = null;
 
@@ -83,6 +84,7 @@ async function initDashboard() {
     
     loadFiles(data.root);
     startStatusPolling();
+    startProcessPolling();
     connectPty(data.root);
   } catch (err) {
     if (err.message !== 'Unauthorized') {
@@ -102,6 +104,7 @@ async function apiFetch(endpoint, options = {}) {
     loginOverlay.style.display = 'flex';
     logoutBtn.style.display = 'none';
     if (statusInterval) clearInterval(statusInterval);
+    if (procInterval) clearInterval(procInterval);
     throw new Error('Unauthorized');
   }
 
@@ -189,10 +192,6 @@ function switchTab(tabId) {
 
   if (tabId === 'editor' && editor) {
     editor.layout();
-  }
-
-  if (tabId === 'processes') {
-    refreshProcesses();
   }
 }
 
@@ -322,30 +321,37 @@ function clearLogs() {
 }
 
 // ─── Processes ─────────────────────────────
+function startProcessPolling() {
+  if (procInterval) clearInterval(procInterval);
+  refreshProcesses();
+  procInterval = setInterval(refreshProcesses, 10000); // Update every 10s
+}
+
 async function refreshProcesses() {
   if (!connected) return;
-  procList.innerHTML = '<tr><td colspan="6" class="placeholder">Updating process list...</td></tr>';
   
   try {
     const data = await apiFetch('/processes');
+    // Only clear if we actually have data, to avoid flickering
     procList.innerHTML = '';
     
     data.processes.forEach(p => {
       const row = document.createElement('tr');
       row.innerHTML = `
         <td class="proc-pid">${p.pid}</td>
-        <td class="proc-name">${escHtml(p.name)}</td>
-        <td>${p.cpu.toFixed(1)}%</td>
-        <td>${p.mem.toFixed(1)}%</td>
-        <td class="proc-ports">${p.ports.join(', ') || '-'}</td>
+        <td class="proc-name" title="${escHtml(p.name)}">${escHtml(p.name)}</td>
+        <td>${p.cpu.toFixed(0)}%</td>
+        <td class="proc-ports">${p.ports.join(',') || '-'}</td>
         <td>
-          <button class="kill-btn" onclick="killProcess(${p.pid})">KILL</button>
+          <button class="kill-btn" onclick="killProcess(${p.pid})">X</button>
         </td>
       `;
       procList.appendChild(row);
     });
   } catch (err) {
-    procList.innerHTML = `<tr><td colspan="6" class="placeholder err">[ fetch failed: ${err.message} ]</td></tr>`;
+    if (err.message !== 'Unauthorized') {
+      procList.innerHTML = `<tr><td colspan="5" class="placeholder err">[ error ]</td></tr>`;
+    }
   }
 }
 
@@ -387,23 +393,6 @@ function connectPty(cwd) {
   };
 }
 
-// ─── API Helper ────────────────────────────
-async function apiFetch(endpoint, options = {}) {
-  const res = await fetch(endpoint, options);
-  
-  if (res.status === 401) {
-    connected = false;
-    loginOverlay.style.display = 'flex';
-    logoutBtn.style.display = 'none';
-    if (statusInterval) clearInterval(statusInterval);
-    throw new Error('Unauthorized');
-  }
-
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({ error: res.statusText }));
-    throw new Error(body.error || `HTTP ${res.status}`);
-  }
-  return res.json();
 }
 
 // ─── Status Polling ────────────────────────
