@@ -231,6 +231,9 @@ body {
   color: var(--green-dim);
   letter-spacing: 2px;
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .toggle-hidden {
@@ -443,7 +446,9 @@ body {
 .action-btn--info { border-color: #004466; color: var(--cyan); }
 .action-btn--info:hover:not(:disabled) { background: #001a26; border-color: var(--cyan); box-shadow: 0 0 8px rgba(0,204,255,0.15); color: #fff; }
 
-.btn-icon { font-size: 14px; }
+.btn-icon { font-size: 14px; display: inline-flex; align-items: center; justify-content: center; }
+
+svg { vertical-align: middle; }
 
 .port-mgmt {
   display: flex;
