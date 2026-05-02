@@ -29,6 +29,7 @@ const uptimeVal     = document.getElementById('uptime-val');
 const logViewer     = document.getElementById('log-viewer');
 const editorFilename = document.getElementById('editor-filename');
 const saveBtn       = document.getElementById('save-btn');
+const procList      = document.getElementById('proc-list');
 
 const loginOverlay  = document.getElementById('login-overlay');
 const loginPassword = document.getElementById('login-password');
@@ -189,6 +190,10 @@ function switchTab(tabId) {
   if (tabId === 'editor' && editor) {
     editor.layout();
   }
+
+  if (tabId === 'processes') {
+    refreshProcesses();
+  }
 }
 
 // ─── Code Editor ───────────────────────────
@@ -310,6 +315,50 @@ async function refreshLogs() {
 
 function clearLogs() {
   logViewer.innerHTML = '<span class="dim">[ logs cleared ]</span>';
+}
+
+// ─── Processes ─────────────────────────────
+async function refreshProcesses() {
+  if (!connected) return;
+  procList.innerHTML = '<tr><td colspan="6" class="placeholder">Updating process list...</td></tr>';
+  
+  try {
+    const data = await apiFetch('/processes');
+    procList.innerHTML = '';
+    
+    data.processes.forEach(p => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td class="proc-pid">${p.pid}</td>
+        <td class="proc-name">${escHtml(p.name)}</td>
+        <td>${p.cpu.toFixed(1)}%</td>
+        <td>${p.mem.toFixed(1)}%</td>
+        <td class="proc-ports">${p.ports.join(', ') || '-'}</td>
+        <td>
+          <button class="kill-btn" onclick="killProcess(${p.pid})">KILL</button>
+        </td>
+      `;
+      procList.appendChild(row);
+    });
+  } catch (err) {
+    procList.innerHTML = `<tr><td colspan="6" class="placeholder err">[ fetch failed: ${err.message} ]</td></tr>`;
+  }
+}
+
+async function killProcess(pid) {
+  if (!confirm(`Are you sure you want to KILL process ${pid}?`)) return;
+  
+  try {
+    await apiFetch('/action', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'kill_pid', pid, path: currentPath.textContent })
+    });
+    print(`✓ Process ${pid} killed.`, 'ok');
+    refreshProcesses();
+  } catch (err) {
+    print(`✗ Kill failed: ${err.message}`, 'err');
+  }
 }
 
 function connectPty(cwd) {

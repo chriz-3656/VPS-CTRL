@@ -534,6 +534,62 @@ body {
   color: var(--cyan);
 }
 
+/* ─── PROCESSES PANEL ─────────────────────── */
+.panel-processes {
+  flex: 1;
+  border: none;
+}
+
+.proc-table-container {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--bg-panel);
+}
+
+.proc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.proc-table th {
+  position: sticky;
+  top: 0;
+  background: var(--bg-panel2);
+  color: var(--text-dim);
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  font-weight: normal;
+  letter-spacing: 1px;
+}
+
+.proc-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(15, 58, 30, 0.3);
+  color: var(--text-mid);
+}
+
+.proc-table tr:hover td {
+  background: var(--green-glow);
+  color: var(--green);
+}
+
+.proc-pid { color: var(--cyan); font-weight: bold; }
+.proc-name { color: var(--green); }
+.proc-ports { color: var(--amber); }
+
+.kill-btn {
+  background: transparent;
+  border: 1px solid #662222;
+  color: var(--red);
+  font-family: var(--mono);
+  font-size: 9px;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+.kill-btn:hover { background: #330000; border-color: var(--red); }
+
 #terminal-container {
   flex: 1;
   padding: 8px;

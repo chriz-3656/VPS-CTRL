@@ -75,6 +75,7 @@
         <button class="tab-btn active" onclick="switchTab('terminal')">TERMINAL</button>
         <button class="tab-btn" onclick="switchTab('logs')">LOGS</button>
         <button class="tab-btn" onclick="switchTab('editor')">EDITOR</button>
+        <button class="tab-btn" onclick="switchTab('processes')">PROCESSES</button>
       </nav>
 
       <!-- Tab Contents -->
@@ -155,6 +156,34 @@
             </div>
           </div>
           <div id="monaco-container"></div>
+        </div>
+      </div>
+
+      <div id="tab-processes" class="tab-content">
+        <div class="panel panel-processes">
+          <div class="panel-header">
+            <span class="panel-title">&#10018; PROCESS MANAGER</span>
+            <div class="proc-controls">
+              <button class="ctrl-btn" onclick="refreshProcesses()">REFRESH LIST</button>
+            </div>
+          </div>
+          <div class="proc-table-container">
+            <table class="proc-table">
+              <thead>
+                <tr>
+                  <th>PID</th>
+                  <th>NAME</th>
+                  <th>CPU%</th>
+                  <th>MEM%</th>
+                  <th>PORTS</th>
+                  <th>ACTION</th>
+                </tr>
+              </thead>
+              <tbody id="proc-list">
+                <tr><td colspan="6" class="placeholder">Click REFRESH to load processes</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 

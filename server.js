@@ -117,6 +117,44 @@ app.get('/status', authenticate, async (req, res) => {
   }
 });
 
+// ─── Process Manager ───────────────────────────────────────────────
+app.get('/processes', authenticate, async (req, res) => {
+  try {
+    const [proc, connections] = await Promise.all([
+      si.processes(),
+      si.networkConnections()
+    ]);
+
+    // Map ports to PIDs for easier lookup
+    const portMap = {};
+    connections.forEach(conn => {
+      if (conn.state === 'LISTEN' && conn.localPort) {
+        if (!portMap[conn.pid]) portMap[conn.pid] = [];
+        if (!portMap[conn.pid].includes(conn.localPort)) {
+          portMap[conn.pid].push(conn.localPort);
+        }
+      }
+    });
+
+    // Filter and sort processes (showing top 50 by CPU/RAM or relevant to node/bot)
+    const list = proc.list
+      .map(p => ({
+        pid: p.pid,
+        name: p.name,
+        cpu: p.cpu,
+        mem: p.mem,
+        user: p.user,
+        ports: portMap[p.pid] || []
+      }))
+      .sort((a, b) => b.cpu - a.cpu || b.mem - a.mem)
+      .slice(0, 50);
+
+    res.json({ processes: list });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ─── Utilities ─────────────────────────────────────────────────────
 function getCleanEnv() {
   const env = { ...process.env };
@@ -144,7 +182,7 @@ function formatUptime(seconds) {
 }
 
 // ─── Action System ─────────────────────────────────────────────────
-const ALLOWED_ACTIONS = ['deploy', 'install', 'pm2_start', 'pm2_restart', 'pm2_stop', 'logs', 'npm_start', 'npm_dev', 'kill_port'];
+const ALLOWED_ACTIONS = ['deploy', 'install', 'pm2_start', 'pm2_restart', 'pm2_stop', 'logs', 'npm_start', 'npm_dev', 'kill_port', 'kill_pid'];
 
 const COMMANDS = {
   deploy:      'git pull',
@@ -155,11 +193,12 @@ const COMMANDS = {
   logs:        'pm2 logs --lines 50 --nostream',
   npm_start:   'npm start',
   npm_dev:     'npm run dev',
-  kill_port:   'fuser -k' // Will append port/tcp dynamically in handler
+  kill_port:   'fuser -k',
+  kill_pid:    'kill -9'
 };
 
 app.post('/action', authenticate, (req, res) => {
-  const { action, path: targetPath, port } = req.body;
+  const { action, path: targetPath, port, pid } = req.body;
 
   if (!ALLOWED_ACTIONS.includes(action)) {
     return res.status(400).json({ error: `Unknown action: ${action}` });
@@ -181,6 +220,9 @@ app.post('/action', authenticate, (req, res) => {
   if (action === 'kill_port') {
     if (!port) return res.status(400).json({ error: 'Port required for kill_port' });
     cmd = `${cmd} ${port}/tcp`;
+  } else if (action === 'kill_pid') {
+    if (!pid) return res.status(400).json({ error: 'PID required for kill_pid' });
+    cmd = `${cmd} ${pid}`;
   }
 
   exec(cmd, { cwd: execCwd, env: getCleanEnv(), timeout: 60000, maxBuffer: 1024 * 1024 * 2 }, (err, stdout, stderr) => {
