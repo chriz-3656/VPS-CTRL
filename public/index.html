@@ -50,33 +50,24 @@
   <!-- MAIN LAYOUT -->
   <main class="layout">
 
-    <!-- LEFT SIDEBAR: Process Manager -->
-    <aside class="panel sidebar-left processes-section">
+    <!-- LEFT SIDEBAR: File Explorer -->
+    <aside class="panel sidebar-left explorer-section">
       <div class="panel-header">
-        <span class="panel-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> PROCESSES</span>
-        <div class="proc-controls">
-          <button class="ctrl-btn" onclick="refreshProcesses()" title="Refresh List">&#8635;</button>
-        </div>
+        <span class="panel-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> FILE EXPLORER</span>
+        <label class="toggle-hidden">
+          <input type="checkbox" id="show-hidden-toggle" onchange="toggleHiddenFiles()" />
+          <span>HIDDEN</span>
+        </label>
       </div>
-      <div class="sidebar-table-container">
-        <table class="proc-table">
-          <thead>
-            <tr>
-              <th>PID</th>
-              <th>NAME</th>
-              <th>CPU%</th>
-              <th>PORTS</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="proc-list">
-            <tr><td colspan="5" class="placeholder">Awaiting Auth...</td></tr>
-          </tbody>
-        </table>
+      <div class="path-bar">
+        <span id="current-path">~</span>
+      </div>
+      <div class="file-tree" id="file-tree">
+        <div class="placeholder">[ connect to browse ]</div>
       </div>
     </aside>
 
-    <!-- CENTER CONTENT AREA: Tabs + Terminal/Editor -->
+    <!-- CENTER CONTENT AREA -->
     <section class="panel-main">
       <nav class="tabs-nav">
         <button class="tab-btn active" onclick="switchTab('terminal')">TERMINAL</button>
@@ -85,7 +76,6 @@
       </nav>
 
       <div class="tab-contents-container">
-        
         <div id="tab-terminal" class="tab-content active">
           <!-- Action Bar -->
           <div class="panel panel-actions">
@@ -165,25 +155,32 @@
             <div id="monaco-container"></div>
           </div>
         </div>
-
-      </div> <!-- end tab-contents-container -->
-
+      </div>
     </section>
 
-    <!-- RIGHT SIDEBAR: File Explorer -->
-    <aside class="panel sidebar-right explorer-section">
+    <!-- RIGHT SIDEBAR: Process Manager -->
+    <aside id="sidebar-processes" class="panel sidebar-right processes-section">
       <div class="panel-header">
-        <span class="panel-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> FILE EXPLORER</span>
-        <label class="toggle-hidden">
-          <input type="checkbox" id="show-hidden-toggle" onchange="toggleHiddenFiles()" />
-          <span>HIDDEN</span>
-        </label>
+        <span class="panel-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> PROCESSES</span>
+        <div class="proc-controls">
+          <button class="ctrl-btn" onclick="refreshProcesses()" title="Refresh List">&#8635;</button>
+        </div>
       </div>
-      <div class="path-bar">
-        <span id="current-path">~</span>
-      </div>
-      <div class="file-tree" id="file-tree">
-        <div class="placeholder">[ connect to browse ]</div>
+      <div class="sidebar-table-container">
+        <table class="proc-table">
+          <thead>
+            <tr>
+              <th>PID</th>
+              <th>NAME</th>
+              <th>CPU%</th>
+              <th>PORTS</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="proc-list">
+            <tr><td colspan="5" class="placeholder">Awaiting Auth...</td></tr>
+          </tbody>
+        </table>
       </div>
     </aside>
 

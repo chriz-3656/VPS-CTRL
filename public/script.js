@@ -185,13 +185,23 @@ function switchTab(tabId) {
   if (activeBtn) activeBtn.classList.add('active');
   if (activeContent) activeContent.classList.add('active');
 
+  // Logic: Hide Process Manager when Editor is active
+  const procSidebar = document.getElementById('sidebar-processes');
+  if (procSidebar) {
+    if (tabId === 'editor') {
+      procSidebar.style.display = 'none';
+    } else {
+      procSidebar.style.display = 'flex';
+    }
+  }
+
   if (tabId === 'terminal' && fitAddon) {
     setTimeout(() => fitAddon.fit(), 50);
     term.focus();
   }
 
   if (tabId === 'editor' && editor) {
-    editor.layout();
+    setTimeout(() => editor.layout(), 50);
   }
 }
 
