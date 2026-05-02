@@ -393,8 +393,6 @@ function connectPty(cwd) {
   };
 }
 
-}
-
 // ─── Status Polling ────────────────────────
 function startStatusPolling() {
   if (statusInterval) clearInterval(statusInterval);
