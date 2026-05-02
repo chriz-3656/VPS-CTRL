@@ -2,7 +2,7 @@
   <img src="logo.png" alt="VPS-CTRL Logo" width="180">
 </p>
 
-<h1 align="center">VPS-CTRL 🚀</h1>
+<h1 align="center">VPS-CTRL</h1>
 
 <p align="center">
   <b>Lightweight self-hosted VPS management panel</b><br>
@@ -17,7 +17,7 @@
 
 ---
 
-### 📌 Intro
+### Intro
 
 **VPS-CTRL** is a lightweight, high-performance web dashboard that bridges the gap between raw SSH and complex enterprise panels. It provides a secure, web-based environment to monitor system health, explore files, edit code, and manage processes without ever opening a separate SSH client.
 
@@ -25,7 +25,7 @@ Stop wrestling with terminal multiplexers and complex SSH keys. Manage your enti
 
 ---
 
-### ❓ Why VPS-CTRL?
+### Why VPS-CTRL?
 
 *   **No SSH Dependency:** Access your server's core from any browser, anywhere.
 *   **Web-Based Control:** Full file explorer, code editor, and interactive terminal in one tab.
@@ -34,18 +34,18 @@ Stop wrestling with terminal multiplexers and complex SSH keys. Manage your enti
 
 ---
 
-### ⚡ Features
+### Features
 
-*   **📊 Live Monitoring:** High-resolution CPU/RAM tracking with real-time mini-graphs.
-*   **📁 File Explorer:** Sophisticated filesystem navigation with hidden file support.
-*   **🖥️ PTY Terminal:** Full-blown interactive pseudo-terminal (`xterm.js`) supporting `nano`, `vim`, and `top`.
-*   **📝 Monaco Editor:** The power of VS Code in your browser with syntax highlighting and remote saving.
-*   **🚀 Process Manager:** Dedicated tab to monitor running apps, view active ports, and manage PIDs.
-*   **⚙️ Smart Actions:** One-click deployment for Git, NPM, and PM2 workflows.
+*   **Live Monitoring:** High-resolution CPU/RAM tracking with real-time mini-graphs.
+*   **File Explorer:** Sophisticated filesystem navigation with hidden file support.
+*   **PTY Terminal:** Full-blown interactive pseudo-terminal (`xterm.js`) supporting `nano`, `vim`, and `top`.
+*   **Monaco Editor:** The power of VS Code in your browser with syntax highlighting and remote saving.
+*   **Process Manager:** Dedicated tab to monitor running apps, view active ports, and manage PIDs.
+*   **Smart Actions:** One-click deployment for Git, NPM, and PM2 workflows.
 
 ---
 
-### 🖼️ Screenshots
+### Screenshots
 
 <p align="center">
   <i>(Main Dashboard - System metrics and terminal sync)</i><br>
@@ -64,7 +64,7 @@ Stop wrestling with terminal multiplexers and complex SSH keys. Manage your enti
 
 ---
 
-### ⚙️ Installation
+### Installation
 
 #### One-line Install (Recommended)
 ```bash
@@ -94,7 +94,7 @@ bash <(curl -s https://raw.githubusercontent.com/chriz-3656/VPS-CTRL/main/script
 
 ---
 
-### 🧠 Usage
+### Usage
 
 1.  **Authorize:** Enter your `DASHBOARD_KEY` on the secure login screen.
 2.  **Explore Files:** Use the File Explorer to navigate. The Terminal will automatically sync its path.
@@ -104,7 +104,7 @@ bash <(curl -s https://raw.githubusercontent.com/chriz-3656/VPS-CTRL/main/script
 
 ---
 
-### 🔐 Security
+### Security
 
 *   **JWT Authentication:** All management endpoints are protected by encrypted session tokens.
 *   **Secure Cookies:** `HttpOnly` and `SameSite` flags protect against XSS and CSRF.
@@ -113,7 +113,7 @@ bash <(curl -s https://raw.githubusercontent.com/chriz-3656/VPS-CTRL/main/script
 
 ---
 
-### 🎯 Use Cases
+### Use Cases
 
 *   **Discord Bots:** Monitor uptime and update source code instantly.
 *   **Web Applications:** Deploy new versions with `git pull` and `npm install` via UI.
@@ -121,7 +121,7 @@ bash <(curl -s https://raw.githubusercontent.com/chriz-3656/VPS-CTRL/main/script
 
 ---
 
-### 🛣️ Roadmap
+### Roadmap
 
 *   [ ] **Multi-User Support:** Role-based access control for teams.
 *   [ ] **Docker Integration:** Manage containers and view logs directly.
@@ -129,7 +129,7 @@ bash <(curl -s https://raw.githubusercontent.com/chriz-3656/VPS-CTRL/main/script
 
 ---
 
-### 🤝 Contributing
+### Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
@@ -143,5 +143,5 @@ Contributions are what make the open source community such an amazing place to l
 
 <p align="center">
   <b>VPS-CTRL</b><br>
-  Built with 💚 by <a href="https://github.com/chriz-3656">chriz-3656</a>
+  Built with by <a href="https://github.com/chriz-3656">chriz-3656</a>
 </p>
