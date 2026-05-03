@@ -89,13 +89,14 @@ async function initDashboard() {
     startStatusPolling();
     startProcessPolling();
     connectPty(data.root);
-  } catch (err) {
-    if (err.message !== 'Unauthorized') {
-      console.error('Initialization error:', err);
-      if (term) print(`System Error: ${err.message}`, 'err');
-      else alert(`System Error: ${err.message}`);
+    } catch (err) {
+      if (err.message !== 'Unauthorized') {
+        console.error('Initialization error:', err);
+        const session = terminalSessions[activeTerminalId];
+        if (session) print(`System Error: ${err.message}`, 'err');
+        else alert(`System Error: ${err.message}`);
+      }
     }
-  }
 }
 
 // ─── API Helper ────────────────────────────
@@ -631,9 +632,15 @@ function syncTerminalPath(path) {
   if (ptySocket && ptySocket.readyState === WebSocket.OPEN) {
     // Send cd command. We use a space before to hide it from some history setups, 
     // and \r to execute.
-    ptySocket.send(` cd "${path}"\r`);
-    // Clear the terminal line or just let the prompt refresh
-    term.focus();
+    ptySocket.send(JSON.stringify({ 
+      type: 'input', 
+      sessionId: activeTerminalId, 
+      input: ` cd "${path}"\r` 
+    }));
+
+    // Focus the active terminal
+    const session = terminalSessions[activeTerminalId];
+    if (session) session.term.focus();
   }
 }
 
