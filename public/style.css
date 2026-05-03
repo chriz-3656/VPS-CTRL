@@ -99,14 +99,13 @@ body {
   cursor: pointer;
 }
 
-/* ─── LAYOUT (PRO SPLIT) ────────────────── */
+/* ─── LAYOUT (TRIPLE COLUMN) ──────────────── */
 .layout {
   display: flex;
   flex: 1;
   overflow: hidden;
 }
 
-/* SIDEBARS */
 .sidebar-left, .sidebar-right {
   width: 280px;
   display: flex;
@@ -122,6 +121,7 @@ body {
 
 .sidebar-left { border-right: 1px solid var(--border); }
 .sidebar-right { border-left: 1px solid var(--border); }
+
 /* MAIN AREA */
 .panel-main {
   flex: 1;
@@ -142,6 +142,7 @@ body {
 /* PANELS */
 .panel {
   border: 1px solid var(--border);
+  background: var(--bg-panel);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -176,7 +177,7 @@ body {
 }
 .toggle-hidden input { cursor: pointer; accent-color: var(--green); }
 
-/* PROCESS TABLE */
+/* PROCESS TABLE (SIDEBAR) */
 .sidebar-table-container {
   flex: 1;
   overflow-y: auto;
@@ -243,93 +244,30 @@ body {
 .tab-btn {
   background: transparent; border: none; border-right: 1px solid var(--border);
   color: var(--text-dim); padding: 10px 20px; cursor: pointer; font-family: inherit; font-size: 11px;
+}
 .tab-btn.active { color: var(--green); border-bottom: 2px solid var(--green); background: var(--bg); }
 
 /* TERMINAL TABS */
-.terminal-panel-header {
-  padding: 0 12px;
-}
-
-.terminal-header-left {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.terminal-tabs {
-  display: flex;
-  align-items: stretch;
-  height: 34px;
-}
-
+.terminal-panel-header { padding: 0 12px; }
+.terminal-header-left { display: flex; align-items: center; gap: 20px; }
+.terminal-tabs { display: flex; align-items: stretch; height: 34px; }
 .term-tab {
-  background: transparent;
-  border: none;
-  border-right: 1px solid var(--border);
-  color: var(--text-dim);
-  font-family: inherit;
-  font-size: 10px;
-  padding: 0 15px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s;
+  background: transparent; border: none; border-right: 1px solid var(--border);
+  color: var(--text-dim); font-size: 10px; padding: 0 15px; cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
 }
+.term-tab.active { background: var(--bg); color: var(--green); border-top: 1px solid var(--green); }
+.tab-close-btn { font-size: 12px; opacity: 0.5; }
+.tab-close-btn:hover { color: var(--red); opacity: 1; }
+.add-tab-btn { background: transparent; border: none; color: var(--text-dim); padding: 0 12px; cursor: pointer; font-size: 16px; }
 
-.term-tab:hover {
-  background: rgba(0, 255, 136, 0.05);
-  color: var(--green);
-}
+#terminal-containers { flex: 1; display: flex; flex-direction: column; background: #020b05; overflow: hidden; }
+.terminal-instance { display: none; flex: 1; flex-direction: column; padding: 8px; overflow: hidden; }
+.terminal-instance.active { display: flex; }
 
-.term-tab.active {
-  background: var(--bg);
-  color: var(--green);
-  border-top: 1px solid var(--green);
-}
-
-.tab-close-btn {
-  font-size: 12px;
-  opacity: 0.5;
-}
-.tab-close-btn:hover {
-  color: var(--red);
-  opacity: 1;
-}
-
-.add-tab-btn {
-  background: transparent;
-  border: none;
-  color: var(--text-dim);
-  padding: 0 12px;
-  cursor: pointer;
-  font-size: 16px;
-}
-.add-tab-btn:hover { color: var(--green); }
-
-#terminal-containers {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background: #020b05;
-  overflow: hidden;
-}
-
-.terminal-instance {
-  display: none;
-  flex: 1;
-  flex-direction: column;
-  padding: 8px;
-  overflow: hidden;
-}
-
-.terminal-instance.active {
-  display: flex;
-}
-
+/* TAB CONTENT MAPPING */
 .tab-content { 
   display: none; 
-...
   flex: 1; 
   flex-direction: column; 
   overflow: hidden; 
@@ -338,67 +276,31 @@ body {
 }
 .tab-content.active { display: flex; }
 
-.tab-content > .panel {
-  /* Default: don't grow, let children define height */
-}
-
-/* Specific panels that SHOULD fill the screen */
 .panel-terminal, .panel-logs, .panel-editor {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-.panel-actions {
-  flex-shrink: 0;
-  border-bottom: none; /* Merge with panel below */
-}
+.panel-actions { flex-shrink: 0; border-bottom: none; }
 
 /* ACTIONS */
-.action-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  padding: 12px;
-  background: var(--bg-panel);
-}
-
-.btn-group-label {
-  font-size: 10px;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-right: 4px;
-  white-space: nowrap;
-}
-
+.action-buttons { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px; }
+.btn-group-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-right: 4px; }
 .action-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  background: #041208;
-  border: 1px solid var(--green-dim);
-  color: var(--green);
-  font-family: inherit;
-  font-size: 11px;
-  cursor: pointer;
-  white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px;
+  background: #041208; border: 1px solid var(--green-dim); color: var(--green);
+  font-family: inherit; font-size: 11px; cursor: pointer; white-space: nowrap;
 }
 .action-btn--danger { border-color: #662222; color: var(--red); }
 .action-btn--info { border-color: #004466; color: var(--cyan); }
 
 .port-mgmt { display: flex; align-items: center; gap: 8px; }
-.mini-input {
-  background: #000; border: 1px solid var(--border); color: var(--green);
-  font-family: inherit; font-size: 11px; padding: 4px; width: 60px; outline: none;
-}
+.mini-input { background: #000; border: 1px solid var(--border); color: var(--green); font-size: 11px; padding: 4px; width: 60px; outline: none; }
 
-/* TERMINAL & EDITOR */
+/* COMPONENTS */
 #terminal-container, #monaco-container { flex: 1; background: #020b05; padding: 8px; }
 .log-viewer { flex: 1; background: #020b05; color: var(--text-mid); padding: 15px; overflow-y: auto; font-size: 11px; line-height: 1.5; }
-
 .ctrl-btn { background: transparent; border: 1px solid var(--border); color: var(--text-dim); padding: 2px 8px; cursor: pointer; font-size: 10px; }
 
 /* UTILS */
@@ -407,7 +309,6 @@ body {
 .err { color: var(--red); }
 .inf { color: var(--cyan); }
 .warn { color: var(--amber); }
-
 svg { vertical-align: middle; }
 .btn-icon { display: inline-flex; align-items: center; justify-content: center; }
 
