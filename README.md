@@ -38,7 +38,7 @@ Stop wrestling with terminal multiplexers and complex SSH keys. Manage your enti
 
 *   **Live Monitoring:** High-resolution CPU/RAM tracking with real-time mini-graphs.
 *   **File Explorer:** Sophisticated filesystem navigation with hidden file support.
-*   **PTY Terminal:** Full-blown interactive pseudo-terminal (`xterm.js`) supporting `nano`, `vim`, and `top`.
+*   **🖥️ Multi-Tab PTY Terminal:** Full-blown interactive pseudo-terminal (`xterm.js`) with support for multiple isolated tabs and concurrent sessions.
 *   **Monaco Editor:** The power of VS Code in your browser with syntax highlighting and remote saving.
 *   **🚀 Process Manager:** Persistent sidebar utility to monitor running apps, view active ports, and manage PIDs in real-time.
 *   **⚙️ Smart Actions:** One-click deployment for Git, NPM, and PM2 workflows.

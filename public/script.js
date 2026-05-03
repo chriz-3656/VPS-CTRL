@@ -12,8 +12,8 @@ let lastFsData = null;
 let cpuHistory = new Array(30).fill(0);
 let ramHistory = new Array(30).fill(0);
 
-let term = null;
-let fitAddon = null;
+let terminalSessions = {}; // Map<sessionId, { term, fitAddon, container }>
+let activeTerminalId = 'default';
 let ptySocket = null;
 
 let editor = null;
@@ -37,6 +37,9 @@ const loginPassword = document.getElementById('login-password');
 const loginError    = document.getElementById('login-error');
 const logoutBtn     = document.getElementById('logout-btn');
 const killPortInput = document.getElementById('kill-port-input');
+
+const terminalTabsContainer = document.getElementById('terminal-tabs');
+const terminalContainers    = document.getElementById('terminal-containers');
 
 // ─── Authentication ────────────────────────
 async function login() {
@@ -125,56 +128,142 @@ const ANSI_COLORS = {
   reset: '\x1b[0m'
 };
 
-function initTerminal() {
-  term = new Terminal({
+function initTerminal(sessionId = 'default') {
+  if (terminalSessions[sessionId]) return;
+
+  const container = document.createElement('div');
+  container.id = `terminal-container-${sessionId}`;
+  container.className = `terminal-instance ${sessionId === activeTerminalId ? 'active' : ''}`;
+  terminalContainers.appendChild(container);
+
+  const term = new Terminal({
     theme: {
       background: '#020b05',
       foreground: '#00ff88',
       cursor: '#00ff88',
+      selectionBackground: '#00ff8833'
     },
     fontFamily: "'Share Tech Mono', 'Courier New', monospace",
     fontSize: 12
   });
-  fitAddon = new FitAddon.FitAddon();
+
+  const fitAddon = new FitAddon.FitAddon();
   term.loadAddon(fitAddon);
-  term.open(document.getElementById('terminal-container'));
+  term.open(container);
   fitAddon.fit();
 
-  window.addEventListener('resize', () => {
-    fitAddon.fit();
-  });
-  
   term.onData((data) => {
     if (ptySocket && ptySocket.readyState === WebSocket.OPEN) {
-      ptySocket.send(data);
+      ptySocket.send(JSON.stringify({ type: 'input', sessionId, input: data }));
     }
   });
 
-  print('VPS_CTRL security active.', 'dim');
-  printRaw('─────────────────────────────────────────────', 'dim');
+  terminalSessions[sessionId] = { term, fitAddon, container };
+
+  if (sessionId === 'default') {
+    print('VPS_CTRL security active.', 'dim');
+    printRaw('─────────────────────────────────────────────', 'dim');
+  }
+}
+
+function createNewTerminalTab() {
+  const sessionId = 'term-' + Math.random().toString(36).substr(2, 9);
+  const cwd = currentPath.textContent;
+  
+  // Create UI Tab
+  const tab = document.createElement('button');
+  tab.className = 'term-tab';
+  tab.id = `tab-btn-${sessionId}`;
+  tab.innerHTML = `<span>SESSION</span><span class="tab-close-btn" onclick="event.stopPropagation(); killTerminalSession('${sessionId}')">×</span>`;
+  tab.onclick = () => switchTerminalTab(sessionId);
+  terminalTabsContainer.insertBefore(tab, terminalTabsContainer.querySelector('.add-tab-btn'));
+
+  initTerminal(sessionId);
+
+  // Notify Backend
+  if (ptySocket && ptySocket.readyState === WebSocket.OPEN) {
+    const { cols, rows } = terminalSessions[sessionId].term;
+    ptySocket.send(JSON.stringify({ 
+      type: 'create', 
+      sessionId, 
+      cwd,
+      cols,
+      rows
+    }));
+  }
+
+  switchTerminalTab(sessionId);
+}
+
+function switchTerminalTab(sessionId) {
+  activeTerminalId = sessionId;
+
+  // Update Tab UI
+  document.querySelectorAll('.term-tab').forEach(t => t.classList.remove('active'));
+  const activeTab = document.getElementById(`tab-btn-${sessionId}`) || document.querySelector('.term-tab[onclick*="default"]');
+  if (activeTab) activeTab.classList.add('active');
+
+  // Update Containers
+  document.querySelectorAll('.terminal-instance').forEach(c => c.classList.remove('active'));
+  const activeContainer = document.getElementById(`terminal-container-${sessionId}`);
+  if (activeContainer) activeContainer.classList.add('active');
+
+  // Fit and Focus
+  const session = terminalSessions[sessionId];
+  if (session) {
+    setTimeout(() => {
+      session.fitAddon.fit();
+      session.term.focus();
+    }, 50);
+  }
+}
+
+function killTerminalSession(sessionId) {
+  if (sessionId === 'default') return;
+
+  if (ptySocket && ptySocket.readyState === WebSocket.OPEN) {
+    ptySocket.send(JSON.stringify({ type: 'kill', sessionId }));
+  }
+
+  const session = terminalSessions[sessionId];
+  if (session) {
+    session.term.dispose();
+    session.container.remove();
+    delete terminalSessions[sessionId];
+  }
+
+  const tab = document.getElementById(`tab-btn-${sessionId}`);
+  if (tab) tab.remove();
+
+  if (activeTerminalId === sessionId) {
+    switchTerminalTab('default');
+  }
 }
 
 function print(msg, cls = '') {
-  if (!term) return;
+  const session = terminalSessions[activeTerminalId];
+  if (!session) return;
   const now = new Date().toLocaleTimeString('en-GB', { hour12: false });
   const color = ANSI_COLORS[cls] || '';
-  term.writeln(`\x1b[2m[${now}]\x1b[0m ${color}${msg}\x1b[0m`);
+  session.term.writeln(`\x1b[2m[${now}]\x1b[0m ${color}${msg}\x1b[0m`);
 }
 
 function printRaw(msg, cls = '') {
-  if (!term) return;
+  const session = terminalSessions[activeTerminalId];
+  if (!session) return;
   const color = ANSI_COLORS[cls] || '';
   const lines = msg.split('\n');
   lines.forEach(line => {
-    term.writeln(`${color}${line}\x1b[0m`);
+    session.term.writeln(`${color}${line}\x1b[0m`);
   });
 }
 
 function clearTerminal() {
-  if (term) term.clear();
+  const session = terminalSessions[activeTerminalId];
+  if (session) session.term.clear();
 }
 
-// ─── Tabs ──────────────────────────────────
+// ─── Tabs (Main Tabs) ──────────────────────
 function switchTab(tabId) {
   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -195,9 +284,8 @@ function switchTab(tabId) {
     }
   }
 
-  if (tabId === 'terminal' && fitAddon) {
-    setTimeout(() => fitAddon.fit(), 50);
-    term.focus();
+  if (tabId === 'terminal') {
+    switchTerminalTab(activeTerminalId);
   }
 
   if (tabId === 'editor' && editor) {
@@ -385,23 +473,63 @@ function connectPty(cwd) {
   if (ptySocket) ptySocket.close();
   
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  const url = `${protocol}//${window.location.host}/pty?path=${encodeURIComponent(cwd)}&cols=${term.cols}&rows=${term.rows}`;
+  
+  // First, initialize the 'default' xterm instance locally
+  initTerminal('default');
+  
+  // Now connect to backend, passing initial cols/rows from the default session
+  const defaultSession = terminalSessions['default'];
+  const cols = defaultSession.term.cols;
+  const rows = defaultSession.term.rows;
+
+  const url = `${protocol}//${window.location.host}/pty?path=${encodeURIComponent(cwd)}&cols=${cols}&rows=${rows}`;
   
   ptySocket = new WebSocket(url);
   
   ptySocket.onopen = () => {
-    print('PTY Session Connected.', 'ok');
-    term.focus();
+    print('PTY Multi-Session Active.', 'ok');
+    defaultSession.term.focus();
   };
   
   ptySocket.onmessage = (event) => {
-    term.write(event.data);
+    try {
+      const data = JSON.parse(event.data);
+      if (data.type === 'output') {
+        const session = terminalSessions[data.sessionId];
+        if (session) {
+          session.term.write(data.output);
+        }
+      } else if (data.type === 'error') {
+        print(`[SYSTEM ERROR] ${data.message}`, 'err');
+      }
+    } catch (e) {
+      // Backward compatibility for raw strings (default to main session)
+      const main = terminalSessions['default'];
+      if (main) main.term.write(event.data);
+    }
   };
   
   ptySocket.onclose = () => {
     print('PTY Session Disconnected.', 'err');
   };
 }
+
+window.addEventListener('resize', () => {
+  Object.values(terminalSessions).forEach(session => {
+    session.fitAddon.fit();
+    // Notify backend of resize
+    if (ptySocket && ptySocket.readyState === WebSocket.OPEN) {
+      // Find the ID for this session object
+      const id = Object.keys(terminalSessions).find(key => terminalSessions[key] === session);
+      ptySocket.send(JSON.stringify({
+        type: 'resize',
+        sessionId: id,
+        cols: session.term.cols,
+        rows: session.term.rows
+      }));
+    }
+  });
+});
 
 // ─── Status Polling ────────────────────────
 function startStatusPolling() {
@@ -679,6 +807,5 @@ loginPassword.addEventListener('keydown', e => {
 });
 
 // ─── Init ─────────────────────────
-initTerminal();
 initEditor();
 initDashboard();

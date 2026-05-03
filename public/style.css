@@ -243,11 +243,93 @@ body {
 .tab-btn {
   background: transparent; border: none; border-right: 1px solid var(--border);
   color: var(--text-dim); padding: 10px 20px; cursor: pointer; font-family: inherit; font-size: 11px;
-}
 .tab-btn.active { color: var(--green); border-bottom: 2px solid var(--green); background: var(--bg); }
+
+/* TERMINAL TABS */
+.terminal-panel-header {
+  padding: 0 12px;
+}
+
+.terminal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.terminal-tabs {
+  display: flex;
+  align-items: stretch;
+  height: 34px;
+}
+
+.term-tab {
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: 10px;
+  padding: 0 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.term-tab:hover {
+  background: rgba(0, 255, 136, 0.05);
+  color: var(--green);
+}
+
+.term-tab.active {
+  background: var(--bg);
+  color: var(--green);
+  border-top: 1px solid var(--green);
+}
+
+.tab-close-btn {
+  font-size: 12px;
+  opacity: 0.5;
+}
+.tab-close-btn:hover {
+  color: var(--red);
+  opacity: 1;
+}
+
+.add-tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  padding: 0 12px;
+  cursor: pointer;
+  font-size: 16px;
+}
+.add-tab-btn:hover { color: var(--green); }
+
+#terminal-containers {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #020b05;
+  overflow: hidden;
+}
+
+.terminal-instance {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  padding: 8px;
+  overflow: hidden;
+}
+
+.terminal-instance.active {
+  display: flex;
+}
 
 .tab-content { 
   display: none; 
+...
   flex: 1; 
   flex-direction: column; 
   overflow: hidden; 

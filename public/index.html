@@ -120,13 +120,21 @@
 
           <!-- Terminal Output -->
           <div class="panel panel-terminal">
-            <div class="panel-header">
-              <span class="panel-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg> TERMINAL</span>
+            <div class="panel-header terminal-panel-header">
+              <div class="terminal-header-left">
+                <span class="panel-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg> TERMINAL</span>
+                <div id="terminal-tabs" class="terminal-tabs">
+                  <button class="term-tab active" onclick="switchTerminalTab('default')">MAIN</button>
+                  <button class="add-tab-btn" onclick="createNewTerminalTab()" title="New Tab">+</button>
+                </div>
+              </div>
               <div class="terminal-controls">
                 <button class="ctrl-btn" onclick="clearTerminal()">CLEAR</button>
               </div>
             </div>
-            <div id="terminal-container"></div>
+            <div id="terminal-containers">
+              <div id="terminal-container-default" class="terminal-instance active"></div>
+            </div>
           </div>
         </div>
 

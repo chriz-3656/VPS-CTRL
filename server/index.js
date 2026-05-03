@@ -267,7 +267,7 @@ app.post('/file-save', authenticate, (req, res) => {
 
 const http = require('http');
 const WebSocket = require('ws');
-const pty = require('node-pty');
+const terminalSessions = require('./terminalSessions');
 
 // ─── Serve frontend ────────────────────────────────────────────────
 app.get('/', (req, res) => {
@@ -280,7 +280,6 @@ const wss = new WebSocket.Server({ server, path: '/pty' });
 wss.on('connection', (ws, req) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   
-  // Extract token from cookies manually because WebSocket doesn't support cookies natively in all environments
   const cookies = req.headers.cookie ? Object.fromEntries(req.headers.cookie.split('; ').map(c => c.split('='))) : {};
   const token = cookies.token || url.searchParams.get('token');
 
@@ -296,35 +295,67 @@ wss.on('connection', (ws, req) => {
     return;
   }
 
+  // Set up session output handler
+  const sendToClient = (sessionId, output) => {
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ type: 'output', sessionId, output }));
+    }
+  };
+
+  // For backward compatibility, immediately create a "default" session
   const requestedPath = url.searchParams.get('path');
-  let cwd = validatePath(requestedPath) || ALLOWED_ROOT;
-  
-  if (fs.existsSync(cwd) && !fs.statSync(cwd).isDirectory()) {
-    cwd = path.dirname(cwd);
+  const initialCwd = validatePath(requestedPath) || ALLOWED_ROOT;
+  const initialCols = parseInt(url.searchParams.get('cols') || '80', 10);
+  const initialRows = parseInt(url.searchParams.get('rows') || '24', 10);
+
+  try {
+    const defaultPty = terminalSessions.createSession('default', initialCwd, initialCols, initialRows);
+    defaultPty.onData((data) => sendToClient('default', data));
+  } catch (e) {
+    console.error('Failed to create default terminal session:', e);
   }
 
-  const shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
+  ws.on('message', (msg) => {
+    try {
+      const data = JSON.parse(msg.toString());
+      
+      switch (data.type) {
+        case 'create':
+          try {
+            const safeCwd = validatePath(data.cwd) || ALLOWED_ROOT;
+            const newPty = terminalSessions.createSession(data.sessionId, safeCwd, data.cols, data.rows);
+            newPty.onData((output) => sendToClient(data.sessionId, output));
+          } catch (err) {
+            ws.send(JSON.stringify({ type: 'error', message: err.message }));
+          }
+          break;
+          
+        case 'input':
+          const ptyInput = terminalSessions.getSession(data.sessionId);
+          if (ptyInput) ptyInput.write(data.input);
+          break;
+          
+        case 'kill':
+          terminalSessions.killSession(data.sessionId);
+          break;
 
-  const ptyProcess = pty.spawn(shell, [], {
-    name: 'xterm-color',
-    cols: parseInt(url.searchParams.get('cols') || '80', 10),
-    rows: parseInt(url.searchParams.get('rows') || '24', 10),
-    cwd: cwd,
-    env: getCleanEnv()
-  });
-
-  ptyProcess.onData((data) => {
-    if (ws.readyState === WebSocket.OPEN) {
-      ws.send(data);
+        case 'resize':
+          const ptyResize = terminalSessions.getSession(data.sessionId);
+          if (ptyResize) ptyResize.resize(data.cols, data.rows);
+          break;
+      }
+    } catch (e) {
+      // Not JSON? Treat as raw input for default session (Backward Compatibility)
+      const defaultPty = terminalSessions.getSession('default');
+      if (defaultPty) defaultPty.write(msg.toString());
     }
   });
 
-  ws.on('message', (msg) => {
-    ptyProcess.write(msg.toString());
-  });
-
   ws.on('close', () => {
-    ptyProcess.kill();
+    // Kill all sessions associated with this connection to avoid orphan processes
+    // Note: In a production app with persistence, we might want to keep them alive
+    // But for this project, closing the tab/connection should clean up.
+    terminalSessions.listSessions().forEach(id => terminalSessions.killSession(id));
   });
 });
 
