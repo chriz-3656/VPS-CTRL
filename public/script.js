@@ -131,10 +131,13 @@ const ANSI_COLORS = {
 function initTerminal(sessionId = 'default') {
   if (terminalSessions[sessionId]) return;
 
-  const container = document.createElement('div');
-  container.id = `terminal-container-${sessionId}`;
-  container.className = `terminal-instance ${sessionId === activeTerminalId ? 'active' : ''}`;
-  terminalContainers.appendChild(container);
+  let container = document.getElementById(`terminal-container-${sessionId}`);
+  if (!container) {
+    container = document.createElement('div');
+    container.id = `terminal-container-${sessionId}`;
+    container.className = `terminal-instance ${sessionId === activeTerminalId ? 'active' : ''}`;
+    terminalContainers.appendChild(container);
+  }
 
   const term = new Terminal({
     theme: {
@@ -150,7 +153,9 @@ function initTerminal(sessionId = 'default') {
   const fitAddon = new FitAddon.FitAddon();
   term.loadAddon(fitAddon);
   term.open(container);
-  fitAddon.fit();
+  
+  // Delay fit to ensure parent has dimensions
+  setTimeout(() => fitAddon.fit(), 100);
 
   term.onData((data) => {
     if (ptySocket && ptySocket.readyState === WebSocket.OPEN) {

@@ -299,7 +299,7 @@ body {
 .mini-input { background: #000; border: 1px solid var(--border); color: var(--green); font-size: 11px; padding: 4px; width: 60px; outline: none; }
 
 /* COMPONENTS */
-#terminal-container, #monaco-container { flex: 1; background: #020b05; padding: 8px; }
+#monaco-container { flex: 1; background: #020b05; padding: 8px; }
 .log-viewer { flex: 1; background: #020b05; color: var(--text-mid); padding: 15px; overflow-y: auto; font-size: 11px; line-height: 1.5; }
 .ctrl-btn { background: transparent; border: 1px solid var(--border); color: var(--text-dim); padding: 2px 8px; cursor: pointer; font-size: 10px; }
 

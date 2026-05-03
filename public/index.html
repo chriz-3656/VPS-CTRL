@@ -38,13 +38,13 @@
 
   <!-- LOGIN OVERLAY -->
   <div id="login-overlay" class="overlay">
-    <div class="login-box">
+    <form class="login-box" onsubmit="event.preventDefault(); login();">
       <div class="logo"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-right: 6px;"><rect x="4" y="4" width="16" height="16"/></svg>VPS_CTRL</div>
       <div class="login-title">RESTRICTED ACCESS</div>
-      <input type="password" id="login-password" placeholder="enter password" autocomplete="off" />
-      <button id="login-btn" onclick="login()">AUTHORIZE</button>
+      <input type="password" id="login-password" placeholder="enter password" autocomplete="off" required />
+      <button type="submit" id="login-btn">AUTHORIZE</button>
       <div id="login-error" class="err"></div>
-    </div>
+    </form>
   </div>
 
   <!-- MAIN LAYOUT -->
