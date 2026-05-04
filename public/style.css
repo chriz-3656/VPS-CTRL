@@ -96,6 +96,17 @@ body {
     border-radius: 2px;
 }
 
+.nav-icon-link {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-right: 15px;
+  transition: color 0.2s;
+}
+.nav-icon-link:hover { color: var(--green); }
+
 #logout-btn {
   background: transparent;
   border: 1px solid var(--border);
@@ -235,6 +246,41 @@ body {
   border-radius: 3px;
 }
 .kill-btn:hover { border-color: var(--red); color: var(--red); }
+
+/* SIDEBAR FOOTER */
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  background: var(--panel-light);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dev-credits {
+  font-size: 10px;
+  color: var(--text-dim);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.dev-credits a {
+  color: var(--green);
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 11px;
+}
+.dev-credits a:hover { text-decoration: underline; }
+
+.dev-social {
+  display: flex;
+  gap: 12px;
+}
+.dev-social a {
+  color: var(--text-dim);
+  transition: color 0.2s;
+}
+.dev-social a:hover { color: var(--green); }
 
 /* FILE EXPLORER */
 .path-bar {
