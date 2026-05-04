@@ -634,6 +634,22 @@ async function loadFiles(dirPath) {
     
     // Sync terminal path
     syncTerminalPath(data.current);
+
+    // Auto-select current directory as target
+    selectedPath = data.current;
+    selectedDisplay.textContent = data.current;
+    
+    // Enable/Disable buttons based on project type and selection
+    const allButtons = document.querySelectorAll('.action-btn');
+    allButtons.forEach(btn => {
+      const isNpm = btn.dataset.action && btn.dataset.action.startsWith('npm_');
+      if (isNpm) {
+        btn.disabled = data.projectType !== 'node';
+      } else {
+        btn.disabled = false;
+      }
+    });
+
   } catch (err) {
     print(`FS Error: ${err.message}`, 'err');
     fileTree.innerHTML = `<div class="placeholder err">[ error: ${escHtml(err.message)} ]</div>`;
