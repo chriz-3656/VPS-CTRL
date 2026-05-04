@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.2.0-00ff88?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/version-1.2.1-00ff88?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License">
   <img src="https://img.shields.io/badge/status-production--ready-success?style=flat-square" alt="Status">
 </p>
@@ -38,10 +38,17 @@
 *   **📝 Monaco Editor:** Integrated Monaco Editor (VS Code engine) with syntax highlighting and remote saving.
 *   **🚀 Process Manager:** Persistent sidebar utility to monitor running apps, view active ports, and manage PIDs in real-time.
 *   **⚙️ Smart Actions:** One-click deployment for Git, NPM, and PM2 workflows with intelligent project detection.
+*   **🌐 Professional Landing Page:** Interactive product showcase with feature highlights, deployment guide, and GitHub integration.
+*   **📖 Setup & Deployment Guide:** Comprehensive interactive guide covering PM2 (24/7 uptime), Nginx reverse proxy, SSL/HTTPS with Let's Encrypt, and production deployment best practices.
 
 ---
 
 ### Screenshots
+
+<p align="center">
+  <i>(Dashboard Login- System view)</i><br>
+  <img src="screenshots/login.png" alt="Dashboard" width="800">
+</p>
 
 <p align="center">
   <i>(Triple-Column Dashboard - System, Terminal, and Files in one view)</i><br>
@@ -80,13 +87,16 @@ bash <(curl -s https://raw.githubusercontent.com/chriz-3656/VPS-CTRL/main/script
 3.  **Configure environment:**
     ```bash
     cp .env.example .env
-    # Edit to set your DASHBOARD_KEY and JWT_SECRET
+    # Edit to set your DASHBOARD_PASSWORD and JWT_SECRET
     nano .env
     ```
 4.  **Launch system:**
     ```bash
     npm start
     ```
+
+#### Full Deployment Guide
+For comprehensive setup with **PM2 (24/7 uptime)**, **Nginx reverse proxy**, and **Let's Encrypt SSL/HTTPS**, see the [Setup Guide](setup.html).
 
 ---
 
@@ -106,6 +116,21 @@ bash <(curl -s https://raw.githubusercontent.com/chriz-3656/VPS-CTRL/main/script
 *   **Secure Cookies:** `HttpOnly` and `SameSite` flags protect against XSS and CSRF.
 *   **Environment Isolation:** Child processes are sandboxed to prevent port conflicts with the dashboard.
 *   **Path Jailing:** Operations are strictly restricted to the user's home directory to prevent traversal attacks.
+
+#### Recent Security Improvements (v1.2.0+)
+
+| Issue | Fix | Impact |
+|-------|-----|--------|
+| **TOCTOU Race Condition** | Combined fs.existsSync/statSync into single fs.stat call | Prevents crashes from file deletion race conditions |
+| **Port Validation Missing** | Validates port is integer between 1-65535 | Prevents command injection and invalid commands |
+| **PID Validation Missing** | Validates PID is positive integer | Prevents command injection attacks |
+| **File Read Not Size-Limited** | Added 10MB file size limit | Prevents memory exhaustion attacks (OOM) |
+| **Weak JWT_SECRET Default** | Production warning + environment validation | Better security awareness for deployments |
+| **Missing SameSite Flag** | Added sameSite: 'strict' to cookies | Enhanced CSRF protection |
+| **Filename Injection** | Strip quotes/backslashes from filenames | Prevents command injection via filenames |
+| **Wrong HTTP Status Codes** | Returns proper 404 for missing files | Better HTTP semantics and debugging |
+| **Directory Write Protection** | Added check preventing writes to directories | Prevents accidental operations on wrong path types |
+| **Improved Error Handling** | Better error messages and logging | Clearer debugging and monitoring |
 
 ---
 

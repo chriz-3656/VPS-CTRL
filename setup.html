@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Guide | VPS-CTRL</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green: #00ff88;
+            --green-glow: rgba(0, 255, 136, 0.2);
+            --bg: #0d0d0d;
+            --panel: #141414;
+            --border: #1f3a25;
+            --text-main: #e0e0e0;
+            --text-dim: #888888;
+            --cyan: #00ccff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        /* Navbar */
+        .navbar {
+            height: 80px; display: flex; align-items: center;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .nav-wrapper {
+            width: 100%; display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo-area { display: flex; align-items: center; gap: 12px; }
+        .logo-area img { width: 32px; height: 32px; }
+        .brand-text { font-family: 'Share Tech Mono', monospace; font-size: 20px; letter-spacing: 2px; color: var(--green); }
+
+        .nav-links { display: flex; align-items: center; gap: 32px; }
+        .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 14px; font-weight: 600; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--green); }
+
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 16px; border: 1px solid var(--border);
+            color: var(--text-dim); text-decoration: none; font-size: 12px; font-weight: 800;
+            transition: all 0.3s; border-radius: 4px;
+            background: transparent;
+        }
+        .back-btn:hover { border-color: var(--green); color: var(--green); background: rgba(0, 255, 136, 0.05); }
+
+        /* Header */
+        .header { padding: 80px 0 60px; }
+        h1 { font-size: 48px; line-height: 1.1; font-weight: 800; margin-bottom: 16px; letter-spacing: -2px; }
+        .header p { font-size: 18px; color: var(--text-dim); max-width: 600px; }
+
+        /* TOC */
+        .toc {
+            background: var(--panel); border: 1px solid var(--border);
+            border-radius: 8px; padding: 32px; margin: 60px 0;
+        }
+        .toc h2 { font-size: 20px; margin-bottom: 24px; color: var(--green); }
+        .toc ul { list-style: none; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .toc li { }
+        .toc a { color: var(--text-dim); text-decoration: none; transition: all 0.3s; display: block; padding: 8px 12px; border-radius: 4px; }
+        .toc a:hover { color: var(--green); background: rgba(0, 255, 136, 0.05); }
+
+        /* Section */
+        .section { padding: 60px 0; border-bottom: 1px solid var(--border); }
+        .section h2 { font-size: 32px; margin-bottom: 24px; color: var(--green); }
+        .section h3 { font-size: 18px; margin-top: 32px; margin-bottom: 12px; color: var(--text-main); }
+        .section p { color: var(--text-dim); margin-bottom: 16px; }
+        .section ol, .section ul { margin-left: 24px; margin-bottom: 16px; }
+        .section li { margin-bottom: 8px; color: var(--text-dim); }
+
+        /* Code Block */
+        .code-block {
+            background: #000; border: 1px solid var(--border);
+            border-radius: 6px; padding: 16px; margin: 16px 0;
+            overflow-x: auto; position: relative;
+        }
+        .code-header {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 11px; font-weight: 800; color: #555;
+            margin-bottom: 12px; font-family: 'Share Tech Mono', monospace;
+        }
+        .copy-btn {
+            background: transparent; border: 1px solid var(--border);
+            color: var(--text-dim); padding: 4px 12px; border-radius: 4px;
+            cursor: pointer; font-size: 11px; font-weight: 800;
+            transition: all 0.3s;
+        }
+        .copy-btn:hover { border-color: var(--green); color: var(--green); }
+        .copy-btn.copied { border-color: var(--green); color: var(--green); }
+        .code-block code {
+            font-family: 'Share Tech Mono', monospace; font-size: 13px;
+            color: var(--green); display: block; white-space: pre-wrap; word-wrap: break-word;
+        }
+
+        /* Alert Boxes */
+        .alert {
+            padding: 16px; margin: 24px 0; border-radius: 6px; border-left: 4px solid;
+        }
+        .alert-info { background: rgba(0, 204, 255, 0.1); border-color: var(--cyan); color: var(--text-dim); }
+        .alert-warning { background: rgba(255, 170, 0, 0.1); border-color: #ffaa00; color: var(--text-dim); }
+        .alert-success { background: rgba(0, 255, 136, 0.1); border-color: var(--green); color: var(--text-dim); }
+
+        /* Checklist */
+        .checklist {
+            list-style: none; margin: 16px 0;
+        }
+        .checklist li {
+            padding: 8px 0; padding-left: 28px; position: relative; color: var(--text-dim);
+        }
+        .checklist li:before {
+            content: "✔";
+            position: absolute; left: 0; color: var(--green); font-weight: bold;
+        }
+
+        /* Table */
+        .table {
+            width: 100%; margin: 24px 0; border-collapse: collapse;
+        }
+        .table th { background: rgba(0, 255, 136, 0.1); padding: 12px; text-align: left; font-size: 12px; font-weight: 800; border: 1px solid var(--border); }
+        .table td { padding: 12px; border: 1px solid var(--border); color: var(--text-dim); }
+        .table code { background: rgba(0, 0, 0, 0.3); padding: 2px 6px; border-radius: 3px; font-size: 12px; }
+
+        /* Footer */
+        .footer { padding: 60px 0; border-top: 1px solid var(--border); margin-top: 60px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; margin-bottom: 40px; }
+        .footer-info { display: flex; flex-direction: column; gap: 12px; }
+        .footer-info .logo-area { gap: 12px; }
+        .footer-info p { color: var(--text-dim); }
+        .footer-links { display: flex; flex-direction: column; gap: 12px; }
+        .footer-links p { color: var(--text-main); font-weight: 600; font-size: 14px; }
+        .footer-links a { color: var(--text-dim); text-decoration: none; font-size: 14px; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--green); }
+        .footer-bottom { text-align: center; color: var(--text-dim); padding-top: 24px; border-top: 1px solid var(--border); }
+        .v-tag { display: inline-block; margin-left: 12px; font-size: 12px; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 32px; }
+            .nav-links { gap: 16px; }
+            .toc ul { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .section h2 { font-size: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-wrapper">
+            <div class="logo-area">
+                <img src="logo.png" alt="VPS-CTRL">
+                <span class="brand-text">VPS-CTRL</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="back-btn">← BACK HOME</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Complete Setup Guide</h1>
+            <p>Deploy VPS-CTRL with PM2 (24/7 uptime), Nginx reverse proxy, and SSL/HTTPS in ~60 minutes</p>
+        </div>
+
+        <div class="toc">
+            <h2>Quick Navigation</h2>
+            <ul>
+                <li><a href="#prerequisites">Prerequisites</a></li>
+                <li><a href="#installation">Installation</a></li>
+                <li><a href="#config">Configuration</a></li>
+                <li><a href="#pm2">PM2 Setup</a></li>
+                <li><a href="#nginx">Nginx Setup</a></li>
+                <li><a href="#ssl">SSL/HTTPS</a></li>
+                <li><a href="#testing">Testing</a></li>
+                <li><a href="#troubleshooting">Troubleshooting</a></li>
+            </ul>
+        </div>
+
+        <!-- PREREQUISITES -->
+        <div class="section" id="prerequisites">
+            <h2>Prerequisites</h2>
+            <p>Ensure your VPS meets these requirements:</p>
+            <ul class="checklist">
+                <li>Linux OS (Ubuntu 20.04+ recommended)</li>
+                <li>Node.js v14+</li>
+                <li>npm package manager</li>
+                <li>Build tools (gcc, g++, make, python)</li>
+                <li>sudo access</li>
+                <li>Ports 80, 443, 5050 available</li>
+                <li>Domain name</li>
+            </ul>
+
+            <h3>Check Node.js</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>node --version && npm --version</code>
+            </div>
+
+            <h3>Install Build Tools</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>sudo apt-get update && sudo apt-get install -y build-essential python3</code>
+            </div>
+        </div>
+
+        <!-- INSTALLATION -->
+        <div class="section" id="installation">
+            <h2>Installation</h2>
+            
+            <h3>1. Clone Repository</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>cd ~ && git clone https://github.com/chriz-3656/VPS-CTRL.git
+cd VPS-CTRL</code>
+            </div>
+
+            <h3>2. Install Dependencies</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>npm install</code>
+            </div>
+            <div class="alert alert-info">Takes 2-5 minutes as it compiles native modules (node-pty)</div>
+
+            <h3>3. Test Locally</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>npm start</code>
+            </div>
+            <p>Visit http://localhost:5050 | Default password: <strong>admin</strong></p>
+        </div>
+
+        <!-- CONFIGURATION -->
+        <div class="section" id="config">
+            <h2>Configuration</h2>
+            
+            <h3>Set Custom Credentials</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>export DASHBOARD_PASSWORD="your_secure_password"
+export JWT_SECRET="your_long_jwt_secret_min_32_chars"</code>
+            </div>
+
+            <h3>Test with Custom Credentials</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>DASHBOARD_PASSWORD="your_password" JWT_SECRET="your_secret" npm start</code>
+            </div>
+            <div class="alert alert-warning">Store credentials securely, never commit to Git</div>
+        </div>
+
+        <!-- PM2 SETUP -->
+        <div class="section" id="pm2">
+            <h2>PM2 Setup (24/7 Uptime)</h2>
+            <p>Keep VPS-CTRL running with automatic restart on crashes</p>
+
+            <h3>1. Install PM2</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>sudo npm install -g pm2</code>
+            </div>
+
+            <h3>2. Create Ecosystem Config</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>cat > ~/VPS-CTRL/ecosystem.config.js << 'EOF'
+module.exports = {
+  apps: [{
+    name: 'vps-ctrl',
+    script: './server.js',
+    cwd: '/root/VPS-CTRL',
+    instances: 1,
+    exec_mode: 'fork',
+    env: {
+      NODE_ENV: 'production',
+      PORT: 5050,
+      DASHBOARD_PASSWORD: process.env.DASHBOARD_PASSWORD,
+      JWT_SECRET: process.env.JWT_SECRET
+    },
+    watch: false,
+    max_memory_restart: '200M',
+    autorestart: true,
+    max_restarts: 10,
+    min_uptime: '10s'
+  }]
+};
+EOF</code>
+            </div>
+
+            <h3>3. Start with PM2</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>cd ~/VPS-CTRL && pm2 start ecosystem.config.js</code>
+            </div>
+
+            <h3>4. Enable Auto-Startup</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>pm2 startup && pm2 save</code>
+            </div>
+
+            <h3>Monitor Status</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>pm2 status
+pm2 logs vps-ctrl</code>
+            </div>
+        </div>
+
+        <!-- NGINX SETUP -->
+        <div class="section" id="nginx">
+            <h2>Nginx Reverse Proxy</h2>
+            <p>Expose VPS-CTRL through Nginx with domain support</p>
+
+            <h3>1. Install Nginx</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>sudo apt-get install -y nginx</code>
+            </div>
+
+            <h3>2. Create Nginx Config</h3>
+            <p><strong>Replace</strong> <code>your-domain.com</code> with your domain:</p>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>sudo tee /etc/nginx/sites-available/vps-ctrl > /dev/null << 'EOF'
+upstream vps_ctrl_backend {
+    server 127.0.0.1:5050;
+    keepalive 64;
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name your-domain.com www.your-domain.com;
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name your-domain.com www.your-domain.com;
+
+    ssl_certificate /etc/letsencrypt/live/your-domain.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/your-domain.com/privkey.pem;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+    ssl_prefer_server_ciphers on;
+    add_header Strict-Transport-Security "max-age=31536000" always;
+
+    location / {
+        proxy_pass http://vps_ctrl_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /pty {
+        proxy_pass http://vps_ctrl_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+        proxy_set_header Host $host;
+        proxy_read_timeout 86400;
+    }
+
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript;
+}
+EOF</code>
+            </div>
+
+            <h3>3. Enable & Test</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>sudo ln -s /etc/nginx/sites-available/vps-ctrl /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx</code>
+            </div>
+        </div>
+
+        <!-- SSL SETUP -->
+        <div class="section" id="ssl">
+            <h2>SSL/HTTPS Setup</h2>
+            <p>Get free SSL certificates from Let's Encrypt</p>
+
+            <h3>1. Install Certbot</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>sudo apt-get install -y certbot python3-certbot-nginx</code>
+            </div>
+
+            <h3>2. Obtain Certificate</h3>
+            <p><strong>Replace</strong> <code>your-domain.com</code>:</p>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>sudo certbot certonly --nginx -d your-domain.com -d www.your-domain.com</code>
+            </div>
+
+            <h3>3. Enable Auto-Renewal</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>sudo systemctl enable certbot.timer
+sudo systemctl start certbot.timer</code>
+            </div>
+
+            <h3>4. Reload Nginx</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>sudo nginx -t && sudo systemctl reload nginx</code>
+            </div>
+        </div>
+
+        <!-- TESTING -->
+        <div class="section" id="testing">
+            <h2>Testing & Verification</h2>
+
+            <h3>Test HTTPS</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>curl -I https://your-domain.com</code>
+            </div>
+
+            <h3>Monitor Services</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>pm2 status                    # Check VPS-CTRL status
+pm2 logs vps-ctrl             # View logs
+sudo systemctl status nginx   # Check Nginx
+sudo certbot certificates     # Check SSL certs</code>
+            </div>
+
+            <div class="alert alert-success">✓ Deployment complete! VPS-CTRL is now live with 24/7 uptime and HTTPS</div>
+        </div>
+
+        <!-- TROUBLESHOOTING -->
+        <div class="section" id="troubleshooting">
+            <h2>Troubleshooting</h2>
+
+            <h3>Port 5050 Already in Use</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>sudo lsof -i :5050
+sudo kill -9 PID</code>
+            </div>
+
+            <h3>PM2 Not Starting on Reboot</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>sudo pm2 startup
+pm2 save</code>
+            </div>
+
+            <h3>Nginx 502 Bad Gateway</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>BASH</span>
+                    <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                </div>
+                <code>pm2 status
+pm2 restart vps-ctrl
+sudo tail -f /var/log/nginx/error.log</code>
+            </div>
+
+            <h3>Quick Commands Reference</h3>
+            <table class="table">
+                <tr>
+                    <th>Task</th>
+                    <th>Command</th>
+                </tr>
+                <tr>
+                    <td>Restart VPS-CTRL</td>
+                    <td><code>pm2 restart vps-ctrl</code></td>
+                </tr>
+                <tr>
+                    <td>View Logs</td>
+                    <td><code>pm2 logs vps-ctrl</code></td>
+                </tr>
+                <tr>
+                    <td>Stop VPS-CTRL</td>
+                    <td><code>pm2 stop vps-ctrl</code></td>
+                </tr>
+                <tr>
+                    <td>Reload Nginx</td>
+                    <td><code>sudo systemctl reload nginx</code></td>
+                </tr>
+                <tr>
+                    <td>Test SSL</td>
+                    <td><code>openssl s_client -connect your-domain.com:443</code></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section" style="border: none;">
+            <h2>Deployment Checklist</h2>
+            <ul class="checklist">
+                <li>Node.js v14+ installed</li>
+                <li>VPS-CTRL cloned and installed</li>
+                <li>Custom password & JWT secret set</li>
+                <li>PM2 installed and running</li>
+                <li>Nginx configured and running</li>
+                <li>Domain points to VPS IP</li>
+                <li>SSL certificate obtained</li>
+                <li>HTTPS working</li>
+                <li>Dashboard accessible</li>
+            </ul>
+            <div class="alert alert-success" style="margin-top: 24px;">
+                <strong>✓ Congratulations!</strong> VPS-CTRL is now deployed with 24/7 uptime, HTTPS, and production-ready setup.
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-info">
+                    <div class="logo-area">
+                        <img src="logo.png" alt="Logo">
+                        <span>VPS-CTRL</span>
+                    </div>
+                    <p>Lightweight. Fast. Secure.</p>
+                </div>
+                <div class="footer-links">
+                    <p>Resources</p>
+                    <a href="index.html">Home</a>
+                    <a href="https://github.com/chriz-3656/VPS-CTRL">GitHub</a>
+                    <a href="https://github.com/chriz-3656/VPS-CTRL/blob/main/LICENSE">License</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Crafted with 💚 by <a href="https://github.com/chriz-3656">chriz-3656</a></p>
+                <span class="v-tag">VERSION 1.2.0 // STABLE</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function copyCode(btn) {
+            const code = btn.parentElement.nextElementSibling.textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = '✓ COPIED';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = 'COPY';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

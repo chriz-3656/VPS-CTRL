@@ -723,12 +723,17 @@ function renderFileTree(data) {
     `;
 
     if (entry.type === 'dir') {
+      let clickTimer = null;
       el.onclick = (e) => {
-        // Single click = select
-        selectEntry(el, entry.path);
-        // Double click = navigate (handled below)
+        // Debounce: prevent onclick from firing if double-click is happening
+        clearTimeout(clickTimer);
+        clickTimer = setTimeout(() => {
+          selectEntry(el, entry.path);
+        }, 250);
       };
       el.ondblclick = () => {
+        // Cancel the pending single-click
+        clearTimeout(clickTimer);
         loadFiles(entry.path);
       };
     } else {
@@ -754,11 +759,6 @@ function selectEntry(el, entryPath) {
   });
 
   print(`Selected: ${entryPath}`, 'inf');
-
-  // If it's a directory (from data attribute), sync terminal
-  if (el.dataset.type === 'dir') {
-    syncTerminalPath(entryPath);
-  }
 }
 
 // ─── Actions ───────────────────────────────
