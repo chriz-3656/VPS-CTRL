@@ -212,15 +212,19 @@ function switchTerminalTab(sessionId) {
   // Update Containers
   document.querySelectorAll('.terminal-instance').forEach(c => c.classList.remove('active'));
   const activeContainer = document.getElementById(`terminal-container-${sessionId}`);
-  if (activeContainer) activeContainer.classList.add('active');
+  if (activeContainer) {
+    activeContainer.classList.add('active');
+  }
 
-  // Fit and Focus
+  // Fit and Focus - wait for display: flex to take effect
   const session = terminalSessions[sessionId];
   if (session) {
     setTimeout(() => {
       session.fitAddon.fit();
       session.term.focus();
-    }, 50);
+      // Second fit after a moment to catch any layout shifts
+      setTimeout(() => session.fitAddon.fit(), 50);
+    }, 100);
   }
 }
 
@@ -292,6 +296,9 @@ function switchTab(tabId) {
 
   if (tabId === 'terminal') {
     switchTerminalTab(activeTerminalId);
+    // Extra insurance fit call
+    const session = terminalSessions[activeTerminalId];
+    if (session) setTimeout(() => session.fitAddon.fit(), 150);
   }
 
   if (tabId === 'editor' && editor) {
@@ -526,12 +533,11 @@ function connectPty(cwd) {
 }
 
 window.addEventListener('resize', () => {
-  Object.values(terminalSessions).forEach(session => {
+  Object.keys(terminalSessions).forEach(id => {
+    const session = terminalSessions[id];
     session.fitAddon.fit();
     // Notify backend of resize
     if (ptySocket && ptySocket.readyState === WebSocket.OPEN) {
-      // Find the ID for this session object
-      const id = Object.keys(terminalSessions).find(key => terminalSessions[key] === session);
       ptySocket.send(JSON.stringify({
         type: 'resize',
         sessionId: id,
@@ -540,6 +546,7 @@ window.addEventListener('resize', () => {
       }));
     }
   });
+  if (editor) editor.layout();
 });
 
 // ─── Status Polling ────────────────────────
