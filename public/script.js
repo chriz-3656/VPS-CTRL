@@ -142,13 +142,13 @@ function initTerminal(sessionId = 'default') {
 
   const term = new Terminal({
     theme: {
-      background: '#020b05',
-      foreground: '#00ff88',
+      background: '#000000',
+      foreground: '#e0e0e0',
       cursor: '#00ff88',
-      selectionBackground: '#00ff8833'
+      selectionBackground: 'rgba(0, 255, 136, 0.3)'
     },
-    fontFamily: "'Share Tech Mono', 'Courier New', monospace",
-    fontSize: 12
+    fontFamily: "'Share Tech Mono', monospace",
+    fontSize: 13
   });
 
   const fitAddon = new FitAddon.FitAddon();
@@ -308,20 +308,22 @@ function initEditor() {
       base: 'vs-dark',
       inherit: true,
       rules: [
-        { token: '', foreground: '00ff88', background: '060f09' },
-        { token: 'comment', foreground: '336644', fontStyle: 'italic' },
-        { token: 'keyword', foreground: 'ffaa00' },
+        { token: '', foreground: 'e0e0e0', background: '000000' },
+        { token: 'comment', foreground: '555555', fontStyle: 'italic' },
+        { token: 'keyword', foreground: '00ff88', fontStyle: 'bold' },
         { token: 'string', foreground: '00ccff' },
-        { token: 'number', foreground: 'ff4444' },
+        { token: 'number', foreground: 'ffaa00' },
+        { token: 'delimiter', foreground: '888888' },
+        { token: 'type', foreground: '00ccff' },
       ],
       colors: {
-        'editor.background': '#060f09',
-        'editor.foreground': '#00ff88',
+        'editor.background': '#000000',
+        'editor.foreground': '#e0e0e0',
         'editorCursor.foreground': '#00ff88',
-        'editor.lineHighlightBackground': '#003322',
-        'editorLineNumber.foreground': '#336644',
-        'editor.selectionBackground': '#00ff8833',
-        'editor.inactiveSelectionBackground': '#00ff8811',
+        'editor.lineHighlightBackground': '#111111',
+        'editorLineNumber.foreground': '#333333',
+        'editor.selectionBackground': 'rgba(0, 255, 136, 0.2)',
+        'editor.inactiveSelectionBackground': 'rgba(0, 255, 136, 0.1)',
       }
     });
 
@@ -330,14 +332,17 @@ function initEditor() {
       language: 'javascript',
       theme: 'vps-theme',
       automaticLayout: true,
-      fontSize: 13,
-      fontFamily: "'Share Tech Mono', 'Courier New', monospace",
+      fontSize: 14,
+      fontFamily: "'Share Tech Mono', monospace",
       minimap: { enabled: false },
       lineNumbers: 'on',
-      roundedSelection: false,
+      roundedSelection: true,
       scrollBeyondLastLine: false,
       readOnly: false,
-      cursorStyle: 'block',
+      cursorStyle: 'line',
+      cursorBlinking: 'smooth',
+      smoothScrolling: true,
+      padding: { top: 20, bottom: 20 }
     });
 
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
