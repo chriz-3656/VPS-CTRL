@@ -1,12 +1,12 @@
 /* ───────────────────────────────────────────
-   VPS_CTRL — Industrial Dashboard UI
+   VPS_CTRL — Industrial Dashboard UI (v1.2.0)
    ─────────────────────────────────────────── */
 
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
 
 :root {
   --green:       #00ff88;
-  --green-glow:  rgba(0, 255, 136, 0.2);
+  --green-glow:  rgba(0, 255, 136, 0.15);
   --bg:          #0d0d0d;
   --panel:       #141414;
   --panel-light: #1c1c1c;
@@ -47,7 +47,7 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
 
-/* ─── TOPBAR (GLASSMORPHIC) ──────────────── */
+/* ─── TOPBAR ─────────────────────────────── */
 .topbar {
   display: flex;
   align-items: center;
@@ -55,8 +55,7 @@ body {
   padding: 0 24px;
   height: 60px;
   border-bottom: 1px solid var(--border);
-  background: rgba(13, 13, 13, 0.8);
-  backdrop-filter: blur(12px);
+  background: var(--panel);
   z-index: 100;
   flex-shrink: 0;
 }
@@ -107,9 +106,9 @@ body {
   padding: 6px 16px;
   border-radius: 4px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: background 0.2s, color 0.2s;
 }
-#logout-btn:hover { border-color: var(--red); color: var(--red); background: rgba(255, 68, 68, 0.05); }
+#logout-btn:hover { border-color: var(--red); color: var(--red); }
 
 /* ─── LAYOUT ─────────────────────────────── */
 .layout {
@@ -118,14 +117,12 @@ body {
   overflow: hidden;
 }
 
-/* SIDEBARS */
 .sidebar-left, .sidebar-right {
   width: 280px;
   display: flex;
   flex-direction: column;
   background: var(--panel);
   flex-shrink: 0;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sidebar-right.hidden { display: none !important; }
@@ -133,7 +130,6 @@ body {
 .sidebar-left { border-right: 1px solid var(--border); }
 .sidebar-right { border-left: 1px solid var(--border); }
 
-/* MAIN AREA */
 .panel-main {
   flex: 1;
   display: flex;
@@ -190,7 +186,7 @@ body {
 }
 .toggle-hidden input { accent-color: var(--green); }
 
-/* PROCESS TABLE (SIDEBAR) */
+/* TABLES */
 .sidebar-table-container {
   flex: 1;
   overflow-y: auto;
@@ -256,14 +252,10 @@ body {
   border-left: 2px solid transparent;
   font-size: 13px;
   color: var(--text-dim);
-  transition: all 0.2s;
 }
 .file-entry:hover { background: rgba(255, 255, 255, 0.03); color: var(--text-main); }
 .file-entry.selected { border-left-color: var(--green); background: rgba(0, 255, 136, 0.05); color: var(--green); }
 .file-entry.is-dir { color: var(--text-main); font-weight: 600; }
-
-.entry-icon svg { color: var(--text-dim); }
-.file-entry.selected .entry-icon svg { color: var(--green); }
 
 /* TABS */
 .tabs-nav { 
@@ -277,7 +269,7 @@ body {
   background: transparent; border: none;
   color: var(--text-dim); padding: 14px 20px; cursor: pointer; 
   font-family: inherit; font-size: 12px; font-weight: 800;
-  letter-spacing: 1px; transition: all 0.3s;
+  letter-spacing: 1px;
   border-bottom: 2px solid transparent;
 }
 .tab-btn:hover { color: var(--text-main); }
@@ -311,7 +303,7 @@ body {
   display: flex; align-items: center; gap: 10px;
 }
 .term-tab.active { background: var(--bg); color: var(--green); }
-.tab-close-btn { font-size: 14px; opacity: 0.5; transition: opacity 0.2s; }
+.tab-close-btn { font-size: 14px; opacity: 0.5; }
 .tab-close-btn:hover { color: var(--red); opacity: 1; }
 .add-tab-btn { background: transparent; border: none; color: var(--text-dim); padding: 0 12px; cursor: pointer; font-size: 18px; }
 .add-tab-btn:hover { color: var(--green); }
@@ -320,15 +312,8 @@ body {
 .terminal-instance { display: none; flex: 1; flex-direction: column; padding: 0; overflow: hidden; position: relative; }
 .terminal-instance.active { display: flex; }
 
-/* Ensure xterm fills its container */
-.terminal-instance .xterm {
-  padding: 12px;
-  height: 100%;
-}
-
-.terminal-instance .xterm-viewport {
-  background-color: #000 !important;
-}
+.terminal-instance .xterm { padding: 12px; height: 100%; }
+.terminal-instance .xterm-viewport { background-color: #000 !important; }
 
 /* ACTIONS PANEL */
 .action-buttons { 
@@ -350,13 +335,13 @@ body {
   display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px;
   background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); color: var(--text-main);
   font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer;
-  border-radius: 4px; transition: all 0.3s;
+  border-radius: 4px;
 }
-.action-btn:hover:not(:disabled) { border-color: var(--green); color: var(--green); background: rgba(0, 255, 136, 0.05); }
+.action-btn:hover:not(:disabled) { border-color: var(--green); color: var(--green); }
 .action-btn:disabled { opacity: 0.2; cursor: not-allowed; }
 
-.action-btn--danger:hover:not(:disabled) { border-color: var(--red); color: var(--red); background: rgba(255, 68, 68, 0.05); }
-.action-btn--info:hover:not(:disabled) { border-color: var(--cyan); color: var(--cyan); background: rgba(0, 204, 255, 0.05); }
+.action-btn--danger:hover:not(:disabled) { border-color: var(--red); color: var(--red); }
+.action-btn--info:hover:not(:disabled) { border-color: var(--cyan); color: var(--cyan); }
 
 .port-mgmt { display: flex; align-items: center; gap: 10px; }
 .mini-input { 
@@ -390,11 +375,10 @@ svg { vertical-align: middle; }
 .btn-icon { display: inline-flex; align-items: center; justify-content: center; }
 
 /* LOGIN OVERLAY */
-.overlay { position: fixed; inset: 0; background: rgba(13, 13, 13, 0.95); backdrop-filter: blur(20px); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+.overlay { position: fixed; inset: 0; background: rgba(13, 13, 13, 0.98); z-index: 9999; display: flex; align-items: center; justify-content: center; }
 .login-box { 
     width: 380px; padding: 50px; background: var(--panel); 
     border: 1px solid var(--border); text-align: center; border-radius: 12px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 .login-box .logo { justify-content: center; font-size: 24px; margin-bottom: 12px; }
 .login-title { color: var(--text-dim); font-size: 11px; font-weight: 800; letter-spacing: 3px; margin-bottom: 40px; }
@@ -406,6 +390,6 @@ svg { vertical-align: middle; }
 #login-btn { 
     width: 100%; padding: 14px; background: var(--green); border: none; 
     color: var(--bg); font-weight: 800; cursor: pointer; border-radius: 6px;
-    letter-spacing: 2px; transition: all 0.3s;
+    letter-spacing: 2px; transition: background 0.2s, color 0.2s;
 }
-#login-btn:hover { box-shadow: 0 0 20px var(--green-glow); transform: translateY(-2px); }
+#login-btn:hover { background: #00e67a; }

@@ -1,7 +1,7 @@
 /* VPS-CTRL Premium Landing Page Styles */
 :root {
     --green: #00ff88;
-    --green-glow: rgba(0, 255, 136, 0.3);
+    --green-glow: rgba(0, 255, 136, 0.2);
     --bg: #0d0d0d;
     --panel: #141414;
     --border: #1f3a25;
@@ -24,24 +24,11 @@ body {
 
 .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 
-/* Overlays */
-.noise-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    opacity: 0.03; pointer-events: none; z-index: 1000;
-}
-
-.glow-sphere {
-    position: fixed; top: -10%; right: -10%; width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(0, 255, 136, 0.05) 0%, transparent 70%);
-    pointer-events: none; z-index: -1;
-}
-
 /* Navigation */
 .navbar {
     height: 80px; display: flex; align-items: center;
     border-bottom: 1px solid var(--border);
-    background: rgba(13, 13, 13, 0.8); backdrop-filter: blur(12px);
+    background: var(--bg);
     position: sticky; top: 0; z-index: 100;
 }
 
@@ -76,32 +63,27 @@ body {
 }
 
 h1 { font-size: 64px; line-height: 1.1; font-weight: 800; margin-bottom: 24px; letter-spacing: -2px; }
-.text-gradient {
-    background: linear-gradient(to right, var(--green), #00ccff);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
+.text-gradient { color: var(--green); }
 
 .hero-lead { font-size: 20px; color: var(--text-dim); margin-bottom: 40px; max-width: 500px; }
 
 .cta-group { display: flex; gap: 16px; }
 .btn {
     padding: 16px 32px; border-radius: 6px; font-size: 14px; font-weight: 800;
-    text-decoration: none; transition: all 0.3s; cursor: pointer; border: none;
+    text-decoration: none; transition: background 0.2s, color 0.2s; cursor: pointer; border: none;
     font-family: inherit; letter-spacing: 1px;
 }
 .btn-primary { background: var(--green); color: var(--bg); }
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px var(--green-glow); }
+.btn-primary:hover { transform: translateY(-1px); background: #00e67a; }
 .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
-.btn-outline:hover { border-color: var(--green); color: var(--green); background: rgba(0, 255, 136, 0.05); }
+.btn-outline:hover { border-color: var(--green); color: var(--green); }
 
 /* Terminal Mockup */
-.hero-terminal { perspective: 1000px; }
+.hero-terminal { }
 .terminal-window {
     background: #000; border: 1px solid var(--border); border-radius: 8px;
-    box-shadow: 0 40px 100px rgba(0,0,0,0.8); overflow: hidden;
-    transform: rotateY(-5deg) rotateX(5deg); transition: transform 0.5s;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5); overflow: hidden;
 }
-.terminal-window:hover { transform: rotateY(0) rotateX(0); }
 
 .terminal-bar {
     background: #1a1a1a; padding: 12px 20px; display: flex; align-items: center;
@@ -129,9 +111,8 @@ h1 { font-size: 64px; line-height: 1.1; font-weight: 800; margin-bottom: 24px; l
 .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; }
 .f-card {
     background: var(--panel); border: 1px solid var(--border); padding: 40px; border-radius: 8px;
-    transition: all 0.3s;
 }
-.f-card:hover { border-color: var(--green); transform: translateY(-5px); }
+.f-card:hover { border-color: var(--green); }
 .f-icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: rgba(0, 255, 136, 0.05); border-radius: 8px; color: var(--green); margin-bottom: 24px; }
 .f-card h3 { font-size: 20px; margin-bottom: 12px; }
 .f-card p { font-size: 14px; color: var(--text-dim); }
@@ -164,7 +145,7 @@ h1 { font-size: 64px; line-height: 1.1; font-weight: 800; margin-bottom: 24px; l
 .footer-info p { color: var(--text-dim); font-size: 14px; margin-top: 12px; }
 
 .footer-links p { font-weight: 800; font-size: 14px; margin-bottom: 16px; }
-.footer-links a { display: block; color: var(--text-dim); text-decoration: none; font-size: 14px; margin-bottom: 8px; transition: color 0.3s; }
+.footer-links a { display: block; color: var(--text-dim); text-decoration: none; font-size: 14px; margin-bottom: 8px; transition: color 0.2s; }
 .footer-links a:hover { color: var(--green); }
 
 .footer-bottom { border-top: 1px solid var(--border); padding-top: 40px; display: flex; justify-content: space-between; align-items: center; }

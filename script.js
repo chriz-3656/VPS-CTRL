@@ -68,37 +68,7 @@ async function typeTerminal() {
     }
 }
 
-// 3. Reveal on Scroll
-const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
-const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('revealed');
-            revealObserver.unobserve(entry.target);
-        }
-    });
-}, observerOptions);
-
 document.addEventListener('DOMContentLoaded', () => {
-    // Start terminal typing
+    // Start terminal typing immediately
     typeTerminal();
-
-    // Setup reveal animations
-    const revealElements = document.querySelectorAll('.f-card, .section-heading, .terminal-window, .setup-wrapper');
-    revealElements.forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(30px)';
-        el.style.transition = 'all 0.8s cubic-bezier(0.22, 1, 0.36, 1)';
-        revealObserver.observe(el);
-    });
 });
-
-// Add dynamic class for revealed state
-const style = document.createElement('style');
-style.innerHTML = `
-    .revealed {
-        opacity: 1 !important;
-        transform: translateY(0) !important;
-    }
-`;
-document.head.appendChild(style);
